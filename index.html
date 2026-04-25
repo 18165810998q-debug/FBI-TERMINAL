@@ -1,123 +1,419 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>FBI - SECURE TERMINAL V2.5</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CENTRAL INTELLIGENCE NETWORK</title>
     <style>
-        body { background-color: #000; color: #00ff00; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
-        .hidden { display: none !important; }
-        
-        /* 头部样式 */
-        .fbi-header { position: absolute; top: 20px; left: 40px; display: flex; align-items: center; z-index: 10; }
-        .fbi-logo { width: 50px; height: 50px; margin-right: 15px; }
+        :root {
+            --fbi-green: #00ff00;
+            --fbi-dark-green: #004400;
+            --fbi-bg: #050505;
+            --fbi-red: #ff3333;
+            --fbi-orange: #ff8800;
+        }
 
-        /* 登录屏幕 */
-        #login-screen { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .login-box { border: 1px solid #00ff00; padding: 35px; background: rgba(0,20,0,0.9); box-shadow: 0 0 20px #004400; width: 320px; text-align: center; }
-        input.login-input { background: #000; border: 1px solid #008800; color: #00ff00; padding: 10px; margin: 10px 0; width: 85%; text-align: center; outline: none; }
-        button.login-btn { background: #004400; color: #00ff00; border: 1px solid #00ff00; padding: 12px; cursor: pointer; width: 92%; font-weight: bold; margin-top: 15px; }
-        button.login-btn:hover { background: #00ff00; color: #000; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        /* 主界面 */
-        #main-screen { height: 100vh; display: flex; flex-direction: column; align-items: center; padding-top: 100px; }
-        .console-container { width: 850px; background: rgba(0,20,0,0.9); border: 1px solid #00ff00; padding: 20px; margin-bottom: 20px; }
-        .input-line { font-size: 18px; display: flex; }
-        .input-line input { background: transparent; border: none; color: #fff; outline: none; width: 60%; font-family: inherit; font-size: 18px; margin-left: 10px; }
-        #log-area { height: 100px; overflow-y: hidden; font-size: 14px; color: #00cc00; margin-top: 10px; border-top: 1px dashed #004400; padding-top: 10px; }
+        body {
+            background-color: var(--fbi-bg);
+            color: var(--fbi-green);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        #login-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 1s ease;
+        }
+
+        .login-box {
+            border: 2px solid var(--fbi-green);
+            padding: 40px;
+            background: rgba(0, 20, 0, 0.8);
+            box-shadow: 0 0 30px var(--fbi-dark-green);
+            text-align: center;
+            width: 400px;
+        }
+
+        .login-box h1 { font-size: 24px; margin-bottom: 30px; letter-spacing: 2px; }
+        .login-input {
+            width: 100%; padding: 12px; margin-bottom: 20px;
+            background: transparent; border: 1px solid var(--fbi-dark-green);
+            color: var(--fbi-green); font-family: inherit; font-size: 18px; text-align: center;
+            outline: none;
+        }
+        .login-input:focus { border-color: var(--fbi-green); box-shadow: 0 0 10px var(--fbi-green); }
+        .login-btn {
+            width: 100%; padding: 15px; background: var(--fbi-dark-green);
+            color: var(--fbi-green); border: 1px solid var(--fbi-green);
+            font-family: inherit; font-size: 18px; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px;
+        }
+        .login-btn:hover { background: var(--fbi-green); color: #000; }
+
+        #main-dashboard {
+            display: none;
+            height: 100vh;
+            grid-template-rows: 60px 1fr;
+            grid-template-columns: 250px 1fr;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .top-bar {
+            grid-column: 1 / 3;
+            border-bottom: 2px solid var(--fbi-dark-green);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            background: rgba(0, 20, 0, 0.9);
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .warning-text { color: var(--fbi-red); animation: blink 2s infinite; }
+        @keyframes blink { 0% {opacity: 1;} 50% {opacity: 0;} 100% {opacity: 1;} }
+
+        .sidebar {
+            border-right: 2px solid var(--fbi-dark-green);
+            padding: 20px 0;
+            background: rgba(0, 10, 0, 0.8);
+        }
+        .menu-item {
+            padding: 15px 30px;
+            cursor: pointer;
+            font-size: 18px;
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+        }
+        .menu-item:hover, .menu-item.active {
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 4px solid var(--fbi-green);
+            text-shadow: 0 0 5px var(--fbi-green);
+        }
+
+        .content-area {
+            position: relative;
+            padding: 20px;
+            overflow: hidden;
+            background: radial-gradient(circle, #001100 0%, #000000 100%);
+        }
+
+        .view-panel { display: none; height: 100%; width: 100%; }
+        .view-panel.active { display: block; }
+
+        .map-container {
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            position: relative;
+            border: 1px solid var(--fbi-dark-green);
+            overflow: hidden;
+        }
         
-        #map-container { width: 850px; height: 420px; border: 1px solid #004400; background: rgba(0,5,0,0.5); }
+        .map-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        .node {
+            position: absolute; width: 12px; height: 12px; background: var(--fbi-green);
+            border-radius: 50%; box-shadow: 0 0 15px var(--fbi-green); cursor: pointer;
+            z-index: 5;
+        }
+        .node::after {
+            content: ''; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border: 1px solid var(--fbi-green); border-radius: 50%; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% {transform: scale(1); opacity: 1;} 100% {transform: scale(3); opacity: 0;} }
+        
+        .data-line {
+            position: absolute;
+            background: linear-gradient(to right, transparent, var(--fbi-green), transparent);
+            height: 1px;
+            transform-origin: left center;
+            opacity: 0.4;
+            pointer-events: none;
+            animation: flow 3s linear infinite;
+        }
+        @keyframes flow {
+            0% { background-position: -200px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .miner-box { border: 1px dashed var(--fbi-green); padding: 20px; margin-bottom: 20px; background: rgba(0,0,0,0.5); }
+        .progress-bar { height: 20px; background: #000; border: 1px solid var(--fbi-dark-green); margin: 10px 0; position: relative; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--fbi-green); width: 0%; box-shadow: 0 0 10px var(--fbi-green); }
+        .hash-text { font-size: 24px; font-weight: bold; }
+
+        .cracker-screen { background: #000; border: 1px solid var(--fbi-red); padding: 20px; height: 300px; overflow-y: auto; color: var(--fbi-red); font-size: 14px; }
+        .crack-success { color: var(--fbi-green); font-size: 24px; text-shadow: 0 0 10px var(--fbi-green); display: none; margin-top: 20px; border: 2px solid var(--fbi-green); padding: 15px;}
+
+        #terminal-output { height: calc(100% - 60px); overflow-y: auto; padding-bottom: 20px; }
+        .input-line { display: flex; align-items: center; margin-top: 10px; }
+        .cmd-input { background: transparent; border: none; color: var(--fbi-green); font-family: inherit; font-size: 18px; width: 100%; outline: none; margin-left: 10px; }
+
+        .case-card { border: 1px solid var(--fbi-dark-green); padding: 20px; margin-bottom: 20px; background: rgba(0,20,0,0.5); cursor: pointer; transition: 0.3s; }
+        .case-card:hover { border-color: var(--fbi-green); background: rgba(0,40,0,0.6); }
+        .redacted { background: #111; color: #111; display: inline-block; padding: 0 5px; border-radius: 2px; }
+        .redacted:hover { color: var(--fbi-green); }
+
     </style>
 </head>
 <body>
 
-    <div class="fbi-header">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Seal_of_the_Federal_Bureau_of_Investigation.svg" class="fbi-logo">
-        <div>
-            <div style="font-size: 18px; font-weight: bold;">FEDERAL BUREAU OF INVESTIGATION</div>
-            <div style="font-size: 10px; letter-spacing: 3px;">CENTRAL INTELLIGENCE NETWORK</div>
-        </div>
-    </div>
-
     <div id="login-screen">
         <div class="login-box">
-            <div style="color: #ff3333; margin-bottom: 20px; font-weight: bold;">[ AUTHORIZED ACCESS ONLY ]</div>
-            <input type="text" id="user" class="login-input" placeholder="AGENT_ID">
-            <input type="password" id="pass" class="login-input" placeholder="PASSWORD">
-            <button class="login-btn" onclick="authenticate()">AUTHENTICATE</button>
-            <p id="err-msg" style="color: #ff3333; font-size: 12px; margin-top: 15px;"></p >
+            <h1>[ AGENT AUTHENTICATION ]</h1>
+            <input type="text" id="agent-id" class="login-input" placeholder="AGENT ID" autocomplete="off">
+            <input type="password" id="agent-pass" class="login-input" placeholder="ACCESS KEY" autocomplete="off">
+            <button class="login-btn" onclick="authenticate()">LOG IN</button>
+            <p id="auth-msg" style="margin-top: 20px; font-size: 14px; min-height: 20px;"></p>
         </div>
     </div>
 
-    <div id="main-screen" class="hidden">
-        <div class="console-container">
-            <div class="input-line">
-                <span>[AGENT_CHENG@DB]:~# ping -t </span>
-                <input type="text" id="target" placeholder="输入IP或域名..." onkeydown="if(event.keyCode==13) startTracing()">
+    <div id="main-dashboard">
+        <div class="top-bar">
+            <div>NETWORK: <span style="color: var(--fbi-orange);">SECURE</span> | AGENT: CHENG_0416</div>
+            <div class="warning-text">SYSTEM MONITORING ACTIVE - LEVEL 5 ACCESS</div>
+            <div id="clock">00:00:00</div>
+        </div>
+
+        <div class="sidebar">
+            <div class="menu-item active" onclick="switchView('view-map', this)">> GLOBAL NETWORK</div>
+            <div class="menu-item" onclick="switchView('view-miner', this)">> CRYPTO OPS</div>
+            <div class="menu-item" onclick="switchView('view-cracker', this)">> BRUTEFORCE DECRYPT</div>
+            <div class="menu-item" onclick="switchView('view-cases', this)">> CLASSIFIED FILES</div>
+            <div class="menu-item" onclick="switchView('view-console', this)">> SYSTEM TERMINAL</div>
+        </div>
+
+        <div class="content-area">
+            
+            <div id="view-map" class="view-panel active">
+                <h2 style="margin-bottom: 20px; border-bottom: 1px solid var(--fbi-dark-green); padding-bottom: 10px;">NODE TRAFFIC MAP</h2>
+                <div class="map-container" id="map">
+                    <div class="node" style="top: 40%; left: 80%;" onclick="showNodeInfo('Shenzhen Primary Node', '104.18.37.188', '15ms', 'ACTIVE')"></div>
+                    <div class="node" style="top: 35%; left: 15%;" onclick="showNodeInfo('RackNerd - San Jose', '192.168.1.1', '151ms', 'STANDBY')"></div>
+                    <div class="node" style="top: 45%; left: 45%;" onclick="showNodeInfo('European Relay Node', '45.33.22.11', '89ms', 'ACTIVE')"></div>
+                    <div class="node" style="top: 70%; left: 85%;" onclick="showNodeInfo('Hong Kong Gateway', '203.0.113.5', '22ms', 'ACTIVE')"></div>
+                    
+                    <div id="node-info" style="position: absolute; bottom: 30px; left: 30px; background: rgba(0,0,0,0.9); border: 2px solid var(--fbi-green); padding: 20px; display: none; z-index: 10;">
+                        <p style="color: var(--fbi-orange); margin-bottom: 10px; font-weight: bold;">[ NODE DETAILS ]</p>
+                        <p><strong>NAME:</strong> <span id="n-name"></span></p>
+                        <p><strong>IPV4:</strong> <span id="n-ip"></span></p>
+                        <p><strong>LATENCY:</strong> <span id="n-ping"></span></p>
+                        <p><strong>STATUS:</strong> <span id="n-status"></span></p>
+                    </div>
+                </div>
             </div>
-            <div id="log-area">等待指令... 输入目标后按下 ENTER 键启动追踪。</div>
+
+            <div id="view-miner" class="view-panel">
+                <h2 style="margin-bottom: 20px;">BITCOIN MINING CLUSTER</h2>
+                <div class="miner-box">
+                    <h3>VIRTUAL GPU CLUSTER v4.0</h3>
+                    <p class="hash-text">CURRENT HASHRATE: <span id="hash-rate">145.2</span> TH/s</p>
+                    <p>CORE TEMP: <span id="gpu-temp">62</span>°C | LOAD: 98.4%</p>
+                    <div class="progress-bar"><div class="progress-fill" id="mine-prog1"></div></div>
+                </div>
+                <div class="miner-box" style="border-style: solid; border-color: var(--fbi-orange);">
+                    <h3>TOTAL ASSETS RECOVERED</h3>
+                    <p style="font-size: 42px; color: var(--fbi-orange); font-weight: bold;">₿ <span id="btc-amt">0.00014200</span></p>
+                    <p style="margin-top: 10px;">POOL STATUS: CONNECTED (Satoshi_Mainnet)</p>
+                </div>
+            </div>
+
+            <div id="view-cracker" class="view-panel">
+                <h2 style="margin-bottom: 20px;">BRUTEFORCE DECRYPTION CONSOLE</h2>
+                <button class="login-btn" style="width: 250px; margin-bottom: 20px;" onclick="startCracker()">INITIATE ATTACK</button>
+                <div class="cracker-screen" id="crack-output">
+                    AWAITING TARGET INPUT...
+                </div>
+                <div class="crack-success" id="crack-success-msg">
+                    [ SUCCESS ] DATA PACKET DECRYPTED.<br><br>
+                    EXTRACTED_KEY: <span style="letter-spacing: 2px;">GZ_CHENG_SECURE_2026</span>
+                </div>
+            </div>
+
+            <div id="view-cases" class="view-panel">
+                <h2 style="margin-bottom: 20px;">TOP SECRET CASE FILES</h2>
+                
+                <div class="case-card">
+                    <h3>FILE: #2026-MAY-VPS</h3>
+                    <p><strong>OBJECTIVE:</strong> Establish encrypted tunnel via RackNerd SV.</p>
+                    <p><strong>PRIORITY:</strong> HIGH (Post-Zhongkao)</p>
+                    <p><strong>INTEL:</strong> Use <span class="redacted">Reality Protocol</span> to mask traffic as <span class="redacted">Apple Services</span>. Goal: 100% uptime for personal node. Budget locked.</p>
+                </div>
+
+                <div class="case-card">
+                    <h3>FILE: #2026-HK-TRAVEL</h3>
+                    <p><strong>OBJECTIVE:</strong> Reconnaissance in Shenzhen and Hong Kong.</p>
+                    <p><strong>TEAM:</strong> Agent Cheng + 1 Classmate</p>
+                    <p><strong>PATH:</strong> Entry via <span class="redacted">Chung Ying Street</span>. Estimated duration: <span class="redacted">3 Days</span>. Budget: 2000 CNY.</p>
+                </div>
+            </div>
+
+            <div id="view-console" class="view-panel">
+                <div id="terminal-output">
+                    FBI SYSTEM TERMINAL [Version 10.0.19045.335]<br>
+                    (c) 2026 Central Intelligence Network. All rights reserved.<br><br>
+                </div>
+                <div class="input-line">
+                    <span style="color: var(--fbi-red);">AGENT_CHENG@CIN:~$</span>
+                    <input type="text" id="cmd" class="cmd-input" autocomplete="off" onkeydown="handleCmd(event)">
+                </div>
+            </div>
+
         </div>
-        <div id="map-container"></div>
     </div>
 
-<script>
-    const AGENT_ID = "CHENG_0416";
-    const ACCESS_KEY = "335";
-    let myChart;
+    <script>
+        function authenticate() {
+            const id = document.getElementById('agent-id').value;
+            const pass = document.getElementById('agent-pass').value;
+            const msg = document.getElementById('auth-msg');
 
-    function authenticate() {
-        const u = document.getElementById('user').value;
-        const p = document.getElementById('pass').value;
-        if (u === AGENT_ID && p === ACCESS_KEY) {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('main-screen').classList.remove('hidden');
-            initChart();
-        } else {
-            document.getElementById('err-msg').innerText = "ERROR: INVALID CREDENTIALS.";
+            msg.style.color = "var(--fbi-green)";
+            msg.innerText = "VERIFYING CREDENTIALS...";
+
+            setTimeout(() => {
+                if (id === 'CHENG' && pass === '0416') {
+                    document.getElementById('login-screen').style.opacity = 0;
+                    setTimeout(() => {
+                        document.getElementById('login-screen').style.display = 'none';
+                        const dash = document.getElementById('main-dashboard');
+                        dash.style.display = 'grid';
+                        setTimeout(() => dash.style.opacity = 1, 50);
+                    }, 1000);
+                } else {
+                    msg.style.color = "var(--fbi-red)";
+                    msg.innerText = "INVALID ACCESS KEY. ATTEMPT LOGGED.";
+                }
+            }, 1200);
         }
-    }
 
-    function initChart() {
-        myChart = echarts.init(document.getElementById('map-container'));
-        renderMap();
-    }
+        function switchView(viewId, btn) {
+            document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            btn.classList.add('active');
+        }
 
-    function startTracing() {
-        const target = document.getElementById('target').value;
-        const log = document.getElementById('log-area');
-        if (!target) return;
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('en-GB', {hour12: false}) + ' Z';
+        }, 1000);
 
-        log.innerHTML = `> 初始化保密协议...<br>> 正在路由至: ${target}`;
-        let count = 0;
-        const timer = setInterval(() => {
-            const ms = Math.floor(Math.random() * 15) + 148;
-            log.innerHTML += `<br>> 收到来自 ${target} 的加密包: 字节=32 时间=${ms}ms TTL=48`;
-            log.scrollTop = log.scrollHeight;
-            renderMap(target);
-            if (++count > 50) clearInterval(timer);
-        }, 800);
-    }
+        function showNodeInfo(name, ip, ping, status) {
+            const box = document.getElementById('node-info');
+            box.style.display = 'block';
+            document.getElementById('n-name').innerText = name;
+            document.getElementById('n-ip').innerText = ip;
+            document.getElementById('n-ping').innerText = ping;
+            document.getElementById('n-status').innerText = status;
+        }
 
-    function renderMap(name) {
-        const provinces = [
-            {name: '广东', coord: [113, 23]}, {name: '北京', coord: [116, 40]},
-            {name: '上海', coord: [121, 31]}, {name: '重庆', coord: [106, 29]},
-            {name: '浙江', coord: [120, 29]}, {name: '湖北', coord: [114, 30]}
-        ];
-        const p = provinces[Math.floor(Math.random() * provinces.length)];
+        let btcAmt = 0.00014200;
+        let prog = 0;
+        setInterval(() => {
+            const hash = (144 + Math.random() * 8).toFixed(1);
+            document.getElementById('hash-rate').innerText = hash;
+            document.getElementById('gpu-temp').innerText = Math.floor(60 + Math.random() * 6);
+            
+            prog += Math.random() * 3;
+            if(prog > 100) {
+                prog = 0;
+                btcAmt += 0.00000012;
+                document.getElementById('btc-amt').innerText = btcAmt.toFixed(8);
+            }
+            document.getElementById('mine-prog1').style.width = prog + '%';
+        }, 1000);
 
-        myChart.setOption({
-            backgroundColor: 'transparent',
-            geo: { map: 'china', roam: false, itemStyle: { areaColor: '#001a00', borderColor: '#00ff00' } },
-            series: [{
-                type: 'lines',
-                effect: { show: true, period: 3, trailLength: 0.5, color: '#fff', symbolSize: 2 },
-                lineStyle: { color: '#00ff00', width: 1, opacity: 0.4, curveness: 0.3 },
-                data: [{ fromName: 'SJ', toName: p.name, coords: [[125, 25], p.coord] }]
-            }]
-        });
-    }
-</script>
+        let crackInterval;
+        function startCracker() {
+            const out = document.getElementById('crack-output');
+            const succ = document.getElementById('crack-success-msg');
+            succ.style.display = 'none';
+            out.innerHTML = "LOADING DICTIONARY ATTACK...<br>TARGET_DB: SECURE_VAULT_7<br><br>";
+            
+            let steps = 0;
+            const hex = "0123456789ABCDEF";
+            
+            clearInterval(crackInterval);
+            crackInterval = setInterval(() => {
+                let salt = "";
+                for(let i=0; i<32; i++) { salt += hex.charAt(Math.floor(Math.random() * 16)); }
+                out.innerHTML += `[TRYING] KEY: ${salt.substring(0,8)}... FAILED<br>`;
+                out.scrollTop = out.scrollHeight;
+                
+                steps++;
+                if(steps > 40) {
+                    clearInterval(crackInterval);
+                    out.innerHTML += "<br>> KEY MATCH DETECTED. BYPASSING FIREWALL...<br>";
+                    setTimeout(() => succ.style.display = 'block', 500);
+                }
+            }, 60);
+        }
+
+        function handleCmd(e) {
+            if (e.key === 'Enter') {
+                const input = document.getElementById('cmd');
+                const val = input.value.trim().toLowerCase();
+                const out = document.getElementById('terminal-output');
+                
+                out.innerHTML += `<br><span style="color:var(--fbi-red)">AGENT_CHENG@CIN:~$</span> ${val}<br>`;
+                
+                if (val === 'help') {
+                    out.innerHTML += "Available: status, clear, ping, bypass_firewall, whoami";
+                } else if (val === 'clear') {
+                    out.innerHTML = "";
+                } else if (val === 'status') {
+                    out.innerHTML += "CPU: 12% | MEMORY: 4.2GB/16GB | ENCRYPTION: AES-256 ACTIVE";
+                } else if (val === 'whoami') {
+                    out.innerHTML += "Cheng Guanlin. Junior High Grade 9. Height: 176cm. Target: Top Secret.";
+                } else if (val === 'ping') {
+                    out.innerHTML += "Pinging racknerd_sanjose [192.168.1.1]...<br>Reply from 192.168.1.1: bytes=32 time=151ms TTL=52";
+                } else if (val !== '') {
+                    out.innerHTML += `SH: command not found: ${val}`;
+                }
+                
+                input.value = '';
+                out.scrollTop = out.scrollHeight;
+            }
+        }
+    </script>
 </body>
 </html>
