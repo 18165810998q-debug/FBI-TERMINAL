@@ -3,462 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CENTRAL INTELLIGENCE NETWORK - V5.1</title>
+    <title>2026年中考备考系统 - 物理/化学核心考点</title>
     <style>
         :root {
-            --fbi-green: #00ff00; --fbi-dark-green: #004400; --fbi-bg: #020202;
-            --fbi-red: #ff2222; --fbi-orange: #ff8800; --fbi-cyan: #00ffff;
+            --fbi-green: #00ff00; --fbi-red: #ff2222; --fbi-bg: #020202;
+            --fbi-orange: #ff8800; --fbi-cyan: #00ffff;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: var(--fbi-bg); color: var(--fbi-green); font-family: 'Courier New', Courier, monospace; overflow: hidden; height: 100vh; display: flex; flex-direction: column; user-select: none; }
+        body { background-color: #f4f4f4; color: #333; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; height: 100vh; overflow: hidden; }
+
+        /* ========= 伪装学习层样式 ========= */
+        #decoy-screen {
+            padding: 40px; height: 100%; overflow-y: auto; background: #fff;
+            display: block; position: relative; z-index: 2000;
+        }
+        .decoy-h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        .study-card { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; background: #f9f9f9; }
+        .formula { font-family: 'Times New Roman', serif; color: #e74c3c; font-weight: bold; }
         
-        body::after {
+        /* 隐藏的激活点 */
+        #secret-trigger {
+            position: fixed; bottom: 10px; right: 10px; width: 40px; height: 40px;
+            cursor: default; opacity: 0.1; z-index: 3000;
+        }
+
+        /* ========= FBI 核心终端样式 (默认隐藏) ========= */
+        #fbi-system {
+            display: none; background-color: var(--fbi-bg); color: var(--fbi-green);
+            font-family: 'Courier New', Courier, monospace; height: 100vh; width: 100vw;
+            position: fixed; top: 0; left: 0; z-index: 100; flex-direction: column;
+        }
+        
+        #fbi-system::after {
             content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 999; background-size: 100% 2px, 3px 100%; pointer-events: none;
         }
 
-        #lang-toggle { position: absolute; top: 20px; right: 30px; z-index: 1000; cursor: pointer; border: 1px solid var(--fbi-dark-green); padding: 5px 10px; background: rgba(0,20,0,0.8); font-weight: bold; transition: 0.3s; }
-        #lang-toggle:hover { background: var(--fbi-green); color: #000; box-shadow: 0 0 10px var(--fbi-green); }
+        /* 修复 UI 重叠：将语言切换和时钟分开 */
+        .top-status-group { display: flex; align-items: center; gap: 20px; }
+        #lang-toggle { cursor: pointer; border: 1px solid var(--fbi-green); padding: 2px 8px; font-size: 14px; }
+        #clock { font-size: 16px; min-width: 100px; text-align: right; }
 
-        /* ================= 登录屏幕 ================= */
-        #login-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; transition: opacity 1s ease; }
-        .login-box { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 700px; margin-top: -80px; }
-        .header-content { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
-        .fbi-logo-img { width: 180px; margin-bottom: 25px; filter: drop-shadow(0 0 20px var(--fbi-green)); }
-        .fbi-titles { text-align: center; min-height: 80px; }
-        .main-title { font-size: 38px; font-weight: bold; letter-spacing: 6px; margin-bottom: 15px; text-shadow: 0 0 15px var(--fbi-green); }
-        .sub-title { font-size: 18px; color: var(--fbi-dark-green); letter-spacing: 2px; }
-        .typing-cursor::after { content: "|"; animation: blink-cursor 0.7s infinite; }
-        @keyframes blink-cursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        .input-group { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; opacity: 0; transition: opacity 1s ease; }
-        .login-input { width: 100%; padding: 15px; margin-bottom: 20px; background: rgba(0, 20, 0, 0.3); border: 1px solid var(--fbi-dark-green); color: var(--fbi-green); font-family: inherit; font-size: 18px; text-align: center; outline: none; letter-spacing: 1px; }
-        .login-input:focus { border-color: var(--fbi-green); box-shadow: 0 0 15px rgba(0, 255, 0, 0.2); background: rgba(0, 40, 0, 0.5); }
-        .login-btn { width: 100%; padding: 18px; background: var(--fbi-dark-green); color: var(--fbi-green); border: 1px solid var(--fbi-green); font-family: inherit; font-size: 20px; font-weight: bold; cursor: pointer; letter-spacing: 4px; margin-top: 10px; transition: 0.3s; }
-        .login-btn:hover { background: var(--fbi-green); color: #000; box-shadow: 0 0 20px var(--fbi-green); }
+        /* 登录、侧边栏、地图、档案样式保持并增强... */
+        .fbi-logo-img { width: 180px; filter: drop-shadow(0 0 20px var(--fbi-green)); }
+        #login-screen { background: #000; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .input-group { opacity: 0; transition: 1s; display: flex; flex-direction: column; align-items: center; }
+        .login-input { width: 300px; padding: 12px; margin-bottom: 15px; background: #000; border: 1px solid var(--fbi-dark-green); color: var(--fbi-green); text-align: center; outline: none; }
+        .login-btn { width: 300px; padding: 15px; background: #004400; color: #00ff00; border: 1px solid #00ff00; cursor: pointer; font-weight: bold; }
 
-        /* ================= 主控制台 ================= */
-        #main-dashboard { display: none; height: 100vh; grid-template-rows: 60px 1fr; grid-template-columns: 280px 1fr; opacity: 0; transition: opacity 1s ease; }
-        .top-bar { grid-column: 1 / 3; border-bottom: 2px solid var(--fbi-dark-green); display: flex; justify-content: space-between; align-items: center; padding: 0 30px; background: rgba(0, 15, 0, 0.95); font-size: 16px; font-weight: bold; }
-        .warning-text { color: var(--fbi-red); animation: blink 1.5s infinite; text-shadow: 0 0 5px var(--fbi-red); }
-        @keyframes blink { 0% {opacity: 1;} 50% {opacity: 0;} 100% {opacity: 1;} }
-        
-        .sidebar { border-right: 2px solid var(--fbi-dark-green); background: rgba(0, 10, 0, 0.85); display: flex; flex-direction: column; }
-        .sidebar-header { padding: 25px 0; text-align: center; border-bottom: 1px solid var(--fbi-dark-green); margin-bottom: 10px; }
-        .sidebar-header img { width: 80px; filter: drop-shadow(0 0 10px var(--fbi-green)); margin-bottom: 10px; }
-        .sidebar-header .sys-name { font-weight: bold; letter-spacing: 2px; font-size: 18px; color: var(--fbi-green); }
+        #main-dashboard { display: none; height: 100%; grid-template-rows: 60px 1fr; grid-template-columns: 280px 1fr; }
+        .top-bar { grid-column: 1 / 3; border-bottom: 1px solid #004400; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; }
+        .sidebar { border-right: 1px solid #004400; padding-top: 20px; }
+        .menu-item { padding: 18px 25px; cursor: pointer; border-left: 4px solid transparent; }
+        .menu-item.active { background: rgba(0,255,0,0.1); border-left-color: #00ff00; }
 
-        .menu-item { padding: 18px 30px; cursor: pointer; font-size: 16px; border-left: 4px solid transparent; transition: all 0.3s; letter-spacing: 1px; }
-        .menu-item:hover, .menu-item.active { background: rgba(0, 255, 0, 0.1); border-left: 4px solid var(--fbi-green); text-shadow: 0 0 8px var(--fbi-green); }
-        
-        .content-area { position: relative; padding: 30px; overflow: hidden; background: radial-gradient(circle at center, #001500 0%, #000000 100%); }
-        .view-panel { display: none; height: 100%; width: 100%; animation: scanline 0.4s linear; }
+        .content-area { position: relative; padding: 30px; overflow: hidden; background: radial-gradient(circle, #001500 0%, #000 100%); }
+        .view-panel { display: none; height: 100%; width: 100%; }
         .view-panel.active { display: block; }
-        @keyframes scanline { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
 
-        /* ========= 视图 1：世界地图与绝对精准数据流 ========= */
+        /* 精准地图容器 */
         .map-container { 
-            width: 100%; height: 90%; position: relative; border: 1px solid var(--fbi-dark-green); 
-            background-color: #000500; overflow: hidden;
-            /* 融合模式：同时显示雷达网格和你上传的 map.png */
-            background-image: url('map.png'), 
-                              linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px), 
-                              linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
-            background-size: 100% 100%, 30px 30px, 30px 30px;
-            background-repeat: no-repeat, repeat, repeat;
+            width: 100%; height: 90%; position: relative; border: 1px solid #004400;
+            background-image: url('map.png'); background-size: 100% 100%; background-repeat: no-repeat;
         }
-
-        /* 锁定 viewBox，使 SVG 线条和 HTML 节点的百分比坐标 100% 吻合 */
         .svg-lines { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        .data-stream { fill: none; stroke: var(--fbi-cyan); stroke-width: 2; stroke-dasharray: 8 12; animation: flow-data 2s linear infinite; filter: drop-shadow(0 0 5px var(--fbi-cyan)); opacity: 0.8; }
-        @keyframes flow-data { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+        .data-stream { fill: none; stroke: var(--fbi-cyan); stroke-width: 1.5; stroke-dasharray: 5 10; animation: flow 2s linear infinite; opacity: 0.6; }
+        @keyframes flow { from { stroke-dashoffset: 50; } to { stroke-dashoffset: 0; } }
 
-        .node { position: absolute; width: 10px; height: 10px; background: var(--fbi-cyan); border-radius: 50%; box-shadow: 0 0 10px var(--fbi-cyan); cursor: pointer; z-index: 5; transform: translate(-50%, -50%); transition: 0.2s; }
-        .node:hover { transform: translate(-50%, -50%) scale(1.5); background: #fff; }
-        .node.center-hub { background: var(--fbi-red); box-shadow: 0 0 30px var(--fbi-red); width: 16px; height: 16px; }
-        .node.center-hub::after { content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; border: 2px solid var(--fbi-red); border-radius: 50%; animation: pulse-center 1.5s infinite; }
-        @keyframes pulse-center { 0% {transform: scale(0.5); opacity: 1;} 100% {transform: scale(2.5); opacity: 0;} }
-        
-        #node-info { position: absolute; bottom: 30px; left: 30px; background: rgba(0,0,0,0.95); border: 1px solid var(--fbi-green); padding: 25px; display: none; z-index: 10; box-shadow: 0 0 20px rgba(0,255,0,0.2); pointer-events: none; }
+        /* 修正后的东京坐标和其他节点 */
+        .node { position: absolute; width: 8px; height: 8px; background: var(--fbi-cyan); border-radius: 50%; transform: translate(-50%, -50%); cursor: pointer; }
+        .node.center-hub { width: 12px; height: 12px; background: var(--fbi-red); box-shadow: 0 0 15px var(--fbi-red); }
 
-        /* ========= 其他视图样式 ========= */
-        .miner-box { border: 1px solid var(--fbi-dark-green); padding: 25px; margin-bottom: 25px; background: rgba(0,10,0,0.6); box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
-        .progress-bar { height: 25px; background: #000; border: 1px solid var(--fbi-dark-green); margin: 15px 0; overflow: hidden; position: relative; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--fbi-dark-green), var(--fbi-green)); width: 0%; box-shadow: 0 0 15px var(--fbi-green); }
+        /* 档案卡片 */
+        .case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; overflow-y: auto; height: 90%; }
+        .case-card { border: 1px solid #004400; padding: 20px; background: rgba(0,15,0,0.6); cursor: pointer; }
+        .case-card:hover { border-color: #00ff00; background: rgba(0,30,0,0.8); }
 
-        .cracker-screen { background: #000; border: 1px solid var(--fbi-red); padding: 20px; height: 300px; overflow-y: auto; color: var(--fbi-red); font-size: 15px; line-height: 1.5; box-shadow: inset 0 0 20px rgba(255,0,0,0.1); }
-        .crack-success { color: var(--fbi-green); font-size: 22px; text-shadow: 0 0 10px var(--fbi-green); display: none; margin-top: 25px; border: 2px dashed var(--fbi-green); padding: 20px; text-align: center; background: rgba(0,20,0,0.8); }
+        /* 弹窗 */
+        #modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; padding: 50px; }
+        #modal-box { background: #000; border: 2px solid #00ff00; height: 100%; padding: 40px; overflow-y: auto; position: relative; }
+        .close-btn { position: absolute; top: 20px; right: 20px; color: #ff2222; cursor: pointer; font-size: 24px; }
+        .redacted { background: #222; color: #222; padding: 0 5px; }
+        .redacted:hover { background: transparent; color: inherit; }
 
-        #view-cases { height: 100%; overflow-y: auto; padding-right: 15px; }
-        #view-cases::-webkit-scrollbar { width: 6px; }
-        #view-cases::-webkit-scrollbar-thumb { background: var(--fbi-dark-green); border-radius: 3px; }
-        
-        .case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding-bottom: 50px;}
-        .case-card { border: 1px solid var(--fbi-dark-green); padding: 20px; background: rgba(0,15,0,0.7); transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; }
-        .case-card:hover { border-color: var(--fbi-green); background: rgba(0,30,0,0.9); box-shadow: 0 0 15px rgba(0,255,0,0.2); transform: translateY(-3px); }
-        .case-status { font-size: 12px; font-weight: bold; padding: 3px 8px; border-radius: 2px; margin-bottom: 10px; display: inline-block; }
-        .status-red { background: var(--fbi-red); color: #000; }
-        .status-orange { background: var(--fbi-orange); color: #000; }
-        .redacted { background: #222; color: #222; display: inline-block; padding: 0 5px; border-radius: 2px; transition: 0.3s; }
-        .redacted:hover { color: var(--fbi-green); background: transparent; text-shadow: 0 0 5px var(--fbi-green); }
-
-        #dossier-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; backdrop-filter: blur(5px); }
-        #dossier-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 800px; max-height: 85vh; background: #000; border: 2px solid var(--fbi-green); box-shadow: 0 0 30px rgba(0,255,0,0.2); padding: 40px; overflow-y: auto; color: var(--fbi-green); line-height: 1.8; font-size: 16px; }
-        #dossier-modal::-webkit-scrollbar { width: 5px; }
-        #dossier-modal::-webkit-scrollbar-thumb { background: var(--fbi-green); }
-        .modal-close { position: absolute; top: 20px; right: 20px; background: var(--fbi-red); color: #000; border: none; padding: 8px 15px; font-weight: bold; cursor: pointer; font-family: inherit; font-size: 16px; transition: 0.2s; }
-        .modal-close:hover { background: #fff; box-shadow: 0 0 10px #fff; }
-        .modal-header-img { width: 100px; filter: grayscale(100%) opacity(0.5); float: left; margin-right: 20px; margin-bottom: 20px; }
-
-        #terminal-output { height: calc(100% - 70px); overflow-y: auto; padding-bottom: 20px; line-height: 1.6; }
-        .input-line { display: flex; align-items: center; margin-top: 15px; border-top: 1px dashed var(--fbi-dark-green); padding-top: 15px; }
-        .cmd-input { background: transparent; border: none; color: var(--fbi-green); font-family: inherit; font-size: 18px; width: 100%; outline: none; margin-left: 15px; }
+        /* 矿机与破解 */
+        .cracker-screen { background: #000; border: 1px solid #ff2222; height: 250px; overflow-y: auto; color: #ff2222; padding: 15px; font-size: 13px; }
     </style>
 </head>
-<body onload="startTyping()">
+<body>
 
-    <div id="lang-toggle" onclick="toggleLang()">[ EN / 中文 ]</div>
-
-    <div id="login-screen">
-        <div class="login-box">
-            <div class="header-content">
-                <img src="logo.png" class="fbi-logo-img" alt="FBI Seal">
-                <div class="fbi-titles">
-                    <div class="main-title typing-cursor" id="typing-title"></div>
-                    <div class="sub-title" data-i18n="header_sub_zh">中央情报网络核心终端 V5.1</div>
-                </div>
-            </div>
-            <div class="input-group" id="input-area">
-                <input type="text" id="agent-id" class="login-input" data-i18n-ph="login_id_ph" placeholder="特工授权代码 (AGENT_ID)" autocomplete="off">
-                <input type="password" id="agent-pass" class="login-input" data-i18n-ph="login_pass_ph" placeholder="访问安全密钥 (PASSWORD)" autocomplete="off">
-                <button class="login-btn" onclick="authenticate()" data-i18n="login_btn">建立加密连接</button>
-            </div>
-            <p id="auth-msg" style="margin-top: 25px; font-size: 16px; min-height: 20px; letter-spacing: 1px;"></p>
+    <div id="decoy-screen">
+        <h1 class="decoy-h1">2026年中考核心考点精要</h1>
+        <div class="study-card">
+            <h3>[物理] 牛顿第一定律</h3>
+            <p>一切物体在没有受到力的作用时，总保持静止状态或匀速直线运动状态。</p>
+            <p class="formula">F = ma</p>
         </div>
+        <div class="study-card">
+            <h3>[化学] 氧化还原反应</h3>
+            <p>物质失去电子的作用叫氧化，得到电子的作用叫还原。</p>
+        </div>
+        <div class="study-card">
+            <h3>[物理] 欧姆定律</h3>
+            <p>导体中的电流，跟导体两端的电压成正比，跟导体的电阻成反比。</p>
+            <p class="formula">I = U / R</p>
+        </div>
+        <div id="secret-trigger" onclick="triggerSystem()"></div>
     </div>
 
-    <div id="main-dashboard">
-        <div class="top-bar">
-            <div data-i18n="top_network">安全协议: <span style="color: var(--fbi-green);">PRISM-X 启用</span> | 登录特工: CHENG_0416</div>
-            <div class="warning-text" data-i18n="top_warning">最高机密 - LEVEL 6 权限已解锁</div>
-            <div id="clock">00:00:00</div>
-        </div>
-
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <img src="logo.png" alt="Sys Logo">
-                <div class="sys-name">PRISM SYSTEM V5.1</div>
+    <div id="fbi-system">
+        <div id="login-screen">
+            <img src="logo.png" class="fbi-logo-img">
+            <h1 style="margin: 20px 0; letter-spacing: 5px;" id="login-title">AUTHORIZED ACCESS ONLY</h1>
+            <div class="input-group" id="login-inputs">
+                <input type="text" id="uid" class="login-input" placeholder="AGENT ID">
+                <input type="password" id="pwd" class="login-input" placeholder="PASSWORD">
+                <button class="login-btn" onclick="login()">ESTABLISH CONNECTION</button>
             </div>
-            <div class="menu-item active" onclick="switchView('view-map', this)" data-i18n="menu_map">> 全球链路追踪矩阵</div>
-            <div class="menu-item" onclick="switchView('view-miner', this)" data-i18n="menu_miner">> 算力劫持协议</div>
-            <div class="menu-item" onclick="switchView('view-cracker', this)" data-i18n="menu_crack">> 定向密码注入器</div>
-            <div class="menu-item" onclick="switchView('view-cases', this)" data-i18n="menu_cases">> 核心绝密档案库</div>
-            <div class="menu-item" onclick="switchView('view-console', this)" data-i18n="menu_console">> 系统内核终端</div>
+            <p id="login-msg" style="margin-top: 20px; color: var(--fbi-red);"></p>
         </div>
 
-        <div class="content-area">
-            
-            <div id="view-map" class="view-panel active">
-                <h2 style="margin-bottom: 25px; border-bottom: 1px solid var(--fbi-dark-green); padding-bottom: 15px;" data-i18n="map_title">全球数据链路追踪 (实时)</h2>
-                <div class="map-container" id="map-area">
-                    
-                    <svg class="svg-lines" viewBox="0 0 1000 500" preserveAspectRatio="none">
-                        <path d="M 150 150 Q 450 50 750 250" class="data-stream" style="animation-duration: 2s; animation-delay: 0.1s;" /> <path d="M 250 180 Q 500 100 750 250" class="data-stream" style="animation-duration: 2.2s; animation-delay: 0.4s;" /> <path d="M 300 350 Q 525 450 750 250" class="data-stream" style="animation-duration: 2.5s; animation-delay: 0.8s;" /> <path d="M 480 160 Q 615 100 750 250" class="data-stream" style="animation-duration: 1.8s; animation-delay: 0.2s;" /> <path d="M 550 120 Q 650 80 750 250" class="data-stream" style="animation-duration: 1.5s; animation-delay: 0.9s;" /> <path d="M 550 250 Q 650 300 750 250" class="data-stream" style="animation-duration: 1.7s; animation-delay: 0.5s;" /> <path d="M 520 350 Q 635 400 750 250" class="data-stream" style="animation-duration: 2.1s; animation-delay: 0.3s;" /> <path d="M 700 350 Q 725 300 750 250" class="data-stream" style="animation-duration: 1.2s; animation-delay: 0.7s;" /> <path d="M 850 180 Q 800 200 750 250" class="data-stream" style="animation-duration: 1.4s; animation-delay: 0.6s;" /> <path d="M 900 400 Q 825 325 750 250" class="data-stream" style="animation-duration: 2.3s; animation-delay: 0.2s;" /> </svg>
-
-                    <div class="node center-hub" style="left: 75%; top: 50%;" onmouseover="showNodeInfo('中央控制枢纽 (GZ HQ)', '104.18.37.188', '2ms', '安全 (SECURE)')" onmouseout="hideNodeInfo()"></div>
-                    
-                    <div class="node" style="left: 15%; top: 30%;" onmouseover="showNodeInfo('硅谷数据中心 (SV RackNerd)', '192.168.1.1', '145ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="left: 25%; top: 36%;" onmouseover="showNodeInfo('纽约金融街网关', '198.51.100.2', '160ms', '数据截获中 (INTERCEPTING)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="left: 30%; top: 70%;" onmouseover="showNodeInfo('圣保罗暗网节点', '200.15.44.2', '210ms', '待机 (STANDBY)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="left: 48%; top: 32%;" onmouseover="showNodeInfo('法兰克福核心路由', '45.33.22.11', '89ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="left: 55%; top: 24%;" onmouseover="showNodeInfo('莫斯科隐秘基站', '82.12.33.9', '120ms', '监听中 (LISTENING)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="left: 55%; top: 50%;" onmouseover="showNodeInfo('迪拜卫星接收站', '185.22.44.1', '135ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="left: 52%; top: 70%;" onmouseover="showNodeInfo('开普敦海底光缆接驳点', '154.0.11.2', '280ms', '信号微弱 (WEAK)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="left: 70%; top: 70%;" onmouseover="showNodeInfo('新加坡跨境网关', '203.0.113.5', '35ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="left: 85%; top: 36%;" onmouseover="showNodeInfo('东京情报搜集站', '110.5.44.2', '45ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="left: 90%; top: 80%;" onmouseover="showNodeInfo('悉尼备用灾备中心', '1.1.1.1', '110ms', '同步中 (SYNCING)')" onmouseout="hideNodeInfo()"></div>
-                    
-                    <div id="node-info">
-                        <p style="color: var(--fbi-orange); margin-bottom: 15px; font-weight: bold; font-size: 18px;" data-i18n="map_info_title">[ 节点物理信息扫描 ]</p>
-                        <p><strong data-i18n="map_info_name">物理位置:</strong> <span id="n-name" style="color: #fff;"></span></p>
-                        <p><strong data-i18n="map_info_ip">公网 IP:</strong> <span id="n-ip" style="color: var(--fbi-cyan);"></span></p>
-                        <p><strong data-i18n="map_info_ping">往返延迟:</strong> <span id="n-ping" style="color: var(--fbi-red);"></span></p>
-                        <p><strong data-i18n="map_info_status">当前状态:</strong> <span id="n-status"></span></p>
+        <div id="main-dashboard">
+            <div class="top-bar">
+                <div id="sys-status">SYSTEM: <span style="color:var(--fbi-orange)">ACTIVE</span> | LEVEL 6</div>
+                <div class="warning-text">CLASSIFIED - UNAUTHORIZED ACCESS PROHIBITED</div>
+                <div class="top-status-group">
+                    <div id="lang-toggle" onclick="toggleLang()">[ EN/CN ]</div>
+                    <div id="clock">00:00:00</div>
+                </div>
+            </div>
+            <div class="sidebar">
+                <div class="menu-item active" onclick="showView('v-map', this)">> GLOBAL MATRIX</div>
+                <div class="menu-item" onclick="showView('v-miner', this)">> CRYPTO OPS</div>
+                <div class="menu-item" onclick="showView('v-crack', this)">> BRUTEFORCE</div>
+                <div class="menu-item" onclick="showView('v-case', this)">> DOSSIERS</div>
+            </div>
+            <div class="content-area">
+                <div id="v-map" class="view-panel active">
+                    <div class="map-container">
+                        <svg class="svg-lines" viewBox="0 0 1000 500" preserveAspectRatio="none">
+                            <path d="M150 150 Q450 50 750 250" class="data-stream" />
+                            <path d="M480 160 Q615 100 750 250" class="data-stream" />
+                            <path d="M820 180 Q780 210 750 250" class="data-stream" /> </svg>
+                        <div class="node center-hub" style="left: 75%; top: 50%;"></div>
+                        <div class="node" style="left: 15%; top: 30%;"></div>
+                        <div class="node" style="left: 48%; top: 32%;"></div>
+                        <div class="node" style="left: 82%; top: 36%;"></div> </div>
+                </div>
+                <div id="v-case" class="view-panel">
+                    <div class="case-grid" id="case-list"></div>
+                </div>
+                <div id="v-miner" class="view-panel">
+                    <div class="miner-box">
+                        <h3>HASHING CLUSTER: RTX-4090 x 16</h3>
+                        <div class="progress-bar"><div class="progress-fill" id="m-prog"></div></div>
+                        <p style="font-size: 30px; color: var(--fbi-orange)">₿ <span id="btc">0.00014200</span></p>
                     </div>
                 </div>
-            </div>
-
-            <div id="view-miner" class="view-panel">
-                <h2 style="margin-bottom: 25px;" data-i18n="miner_title">区块链算力劫持协议</h2>
-                <div class="miner-box">
-                    <h3 data-i18n="miner_gpu" style="color: var(--fbi-orange); margin-bottom: 15px;">已感染设备集群 (RTX 4090 Array)</h3>
-                    <p style="font-size: 28px; font-weight: bold; margin: 15px 0;"><span data-i18n="miner_hash">实时哈希碰撞率:</span> <span id="hash-rate" style="color: #fff;">145.2</span> TH/s</p>
-                    <p><span data-i18n="miner_temp">平均核心温度:</span> <span id="gpu-temp" style="color: var(--fbi-red);">62</span>°C | <span data-i18n="miner_load">物理内存占用:</span> 98.4%</p>
-                    <div class="progress-bar"><div class="progress-fill" id="mine-prog1"></div></div>
-                </div>
-                <div class="miner-box" style="border-color: var(--fbi-orange); background: rgba(50,20,0,0.3);">
-                    <h3 data-i18n="miner_assets" style="color: var(--fbi-orange);">洗钱网络拦截总额</h3>
-                    <p style="font-size: 50px; color: var(--fbi-orange); font-weight: bold; margin-top: 10px;">₿ <span id="btc-amt">0.00014200</span></p>
-                </div>
-            </div>
-
-            <div id="view-cracker" class="view-panel">
-                <h2 style="margin-bottom: 25px;" data-i18n="crack_title">定向目标靶向注入器</h2>
-                <div style="display: flex; gap: 15px; margin-bottom: 25px; align-items: center;">
-                    <span style="font-weight: bold; color: var(--fbi-cyan);" data-i18n="crack_target_label">注入目标 (URL/IP):</span>
-                    <input type="text" id="crack-target-input" class="login-input" style="margin-bottom: 0; width: 400px; text-align: left; padding: 10px;" value="https://secure.target-db.gov">
-                    <button class="login-btn" style="width: 200px; margin-top: 0; padding: 10px;" onclick="startCracker()" data-i18n="crack_btn">执行靶向打击</button>
-                </div>
-                
-                <div class="cracker-screen" id="crack-output" data-i18n="crack_wait">系统待命。请输入目标并点击执行。</div>
-                <div class="crack-success" id="crack-success-msg">
-                    <span data-i18n="crack_succ1">[!!!] 核心数据库解密完成 [!!!]</span><br><br>
-                    <span data-i18n="crack_succ2">获取到的明文密钥:</span> <strong style="color: #fff; letter-spacing: 2px;">GZ_CHENG_0416_GOD_MODE</strong>
-                </div>
-            </div>
-
-            <div id="view-cases" class="view-panel">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                    <h2 data-i18n="cases_title">FBI 核心绝密档案库 (共 12 份)</h2>
-                    <span style="color: var(--fbi-red); font-size: 14px; animation: blink 2s infinite;">> 点击卷宗查看详细报告</span>
-                </div>
-                <div class="case-grid"></div>
-            </div>
-
-            <div id="view-console" class="view-panel">
-                <div id="terminal-output">
-                    <span data-i18n="console_greet">================================================<br>  PRISM 核心操作系统内核 v10.4.2<br>  版权所有 (c) 2026 核心情报局。保留所有权利。<br>================================================<br>输入 'help' 获取系统指令列表。<br><br></span>
-                </div>
-                <div class="input-line">
-                    <span style="color: var(--fbi-red); font-weight: bold; margin-right: 15px;">root@prism-cheng:~#</span>
-                    <input type="text" id="cmd" class="cmd-input" autocomplete="off" onkeydown="handleCmd(event)">
+                <div id="v-crack" class="view-panel">
+                    <input type="text" id="target-url" class="login-input" style="width: 100%; text-align: left;" placeholder="TARGET URL">
+                    <button class="login-btn" onclick="startCrack()">INJECT EXPLOIT</button>
+                    <div class="cracker-screen" id="crack-log"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="dossier-modal-overlay">
-        <div id="dossier-modal">
-            <button class="modal-close" onclick="closeDossier()">[X] CLOSE / 关闭</button>
-            <img src="logo.png" class="modal-header-img" alt="Seal">
-            <div style="margin-bottom: 30px;">
-                <span class="case-status status-red">TOP SECRET / 最高机密</span>
-                <span class="case-status status-orange" style="margin-left: 10px;">EYES ONLY</span>
-            </div>
-            <h1 id="modal-title" style="margin-bottom: 20px; color: var(--fbi-orange); font-size: 28px; border-bottom: 1px solid var(--fbi-dark-green); padding-bottom: 10px;"></h1>
-            <div id="modal-content"></div>
+    <div id="modal-overlay">
+        <div id="modal-box">
+            <span class="close-btn" onclick="closeModal()">[X]</span>
+            <h1 id="m-title" style="color: var(--fbi-orange); margin-bottom: 20px;"></h1>
+            <div id="m-body" style="line-height: 1.8; font-size: 16px;"></div>
         </div>
     </div>
 
     <script>
-        // ----------------- 超大型字典 + 档案库内容 V5.1 -----------------
-        const casesData = [
-            { id: 'case_vps', status: 'status-orange', tag: 'PENDING' }, { id: 'case_hk', status: 'status-orange', tag: 'ACTIVE' },
-            { id: 'case_epstein', status: 'status-red', tag: 'CLASSIFIED' }, { id: 'case_8964', status: 'status-red', tag: 'ARCHIVED' },
-            { id: 'case_cyber', status: 'status-orange', tag: 'RESOLVED' }, { id: 'case_quantum', status: 'status-red', tag: 'ACTIVE' },
-            { id: 'case_silkroad', status: 'status-orange', tag: 'CLOSED' }, { id: 'case_satellite', status: 'status-red', tag: 'CRITICAL' },
-            { id: 'case_zeroday', status: 'status-orange', tag: 'MONITORING' }, { id: 'case_botnet', status: 'status-orange', tag: 'RESOLVED' },
-            { id: 'case_neural', status: 'status-red', tag: 'ACTIVE' }, { id: 'case_ransom', status: 'status-orange', tag: 'CLOSED' }
-        ];
+        // 核心变量
+        let lang = 'zh'; let clickCount = 0; let btc = 0.00014200;
 
-        const dict = {
-            'zh': {
-                'header_main_zh': '中 央 情 报 网 络', 'header_sub_zh': 'PRISM 核心终端 V5.1',
-                'login_id_ph': '特工授权代码 (AGENT_ID)', 'login_pass_ph': '访问安全密钥 (PASSWORD)', 'login_btn': '建立加密连接',
-                'top_network': '安全协议: <span style="color: var(--fbi-green);">PRISM-X 启用</span> | 登录特工: CHENG_0416', 'top_warning': '最高机密 - LEVEL 6 权限已解锁',
-                'menu_map': '> 全球链路追踪矩阵', 'menu_miner': '> 算力劫持协议', 'menu_crack': '> 定向密码注入器', 'menu_cases': '> 核心绝密档案库', 'menu_console': '> 系统内核终端',
-                'map_title': '全球数据链路追踪 (实时)', 'map_info_title': '[ 节点物理信息扫描 ]', 'map_info_name': '物理位置:', 'map_info_ip': '公网 IP:', 'map_info_ping': '往返延迟:', 'map_info_status': '当前状态:',
-                'miner_title': '区块链算力劫持协议', 'miner_gpu': '已感染设备集群 (RTX 4090 Array)', 'miner_hash': '实时哈希碰撞率:', 'miner_temp': '平均核心温度:', 'miner_load': '物理内存占用:', 'miner_assets': '洗钱网络拦截总额',
-                'crack_title': '定向目标靶向注入器', 'crack_target_label': '注入目标 (URL/IP):', 'crack_btn': '执行靶向打击', 'crack_wait': '系统待命。请输入目标并点击执行。',
-                'crack_succ1': '[!!!] 目标数据库解密完成 [!!!]', 'crack_succ2': '获取到的明文密钥:',
-                'cases_title': 'FBI 核心绝密档案库 (共 12 份)', 'console_greet': '================================================<br>  PRISM 核心操作系统内核 v10.4.2<br>  版权所有 (c) 2026 核心情报局。保留所有权利。<br>================================================<br>输入 \'help\' 获取系统指令列表。<br><br>',
-                
-                'case_vps_title': '行动代号：RackNerd 穿透部署', 'case_vps_desc': '建立无法追踪的海外物理节点。', 'case_vps_content': '<p><strong>行动时间：</strong> 2026年5月 (中考结束后)</p><p><strong>目标设施：</strong> 美国圣何塞 RackNerd 数据中心</p><p><strong>战术细节：</strong> 特工 Cheng 计划租赁海外独立服务器，利用 <span class="redacted">VLESS + Reality</span> 协议彻底穿透并绕过 <span class="redacted">GFW (长城防火墙)</span> 的深度包检测 (DPI)。</p><p><strong>当前状态：</strong> 等待考试结束许可。</p>',
-                'case_hk_title': '行动代号：深港边境潜行', 'case_hk_desc': '目标计划潜入香港核心区。', 'case_hk_content': '<p><strong>特遣编队：</strong> 代号 "Cheng" 及 1 名随行特工</p><p><strong>渗透路线：</strong> 计划通过 <span class="redacted">深圳中英街</span> 作为跳板，规避常规海关检查。</p><p><strong>风险评估：</strong> 需密切关注边境监控探头信号暴露问题。</p>',
-                'case_epstein_title': '机密卷宗：L-Island 飞行日志', 'case_epstein_desc': '解封的权贵资金链网络。', 'case_epstein_content': '<p><strong>关联人物：</strong> J. Epstein 及多名全球政要。</p><p><strong>调查概况：</strong> 已成功提取 <span class="redacted">"洛丽塔快线" (Lolita Express)</span> 的完整飞行日志。发现专供顶级权贵阶层的 <span class="redacted">未成年人非法交易网络</span>。</p><p><strong>情报级别：</strong> 极高危险。查阅此卷宗的物理 IP 已被记录。</p>',
-                'case_8964_title': '历史档案：Operation T-Square \'89', 'case_8964_desc': '冷战末期截获信号。', 'case_8964_content': '<p><strong>档案时间：</strong> 1989年 春夏之交</p><p><strong>事件概要：</strong> 截获的大规模社会运动无线电频段与被封锁新闻底片。</p><p><strong>安全警告：</strong> 此档案属于 <span class="redacted">最高级别封锁词库 (Level-0 Censored)</span>，严禁外传。</p>',
-                'case_cyber_title': '卷宗 #CYBER-OP', 'case_cyber_desc': '东欧电网瘫痪事件溯源', 'case_cyber_content': '<p>黑客组织攻击了核电站冷却网。C2 服务器位于西伯利亚。</p>',
-                'case_quantum_title': '卷宗 #PHANTOM', 'case_quantum_desc': '量子计算机暴力破解防范', 'case_quantum_content': '<p>财团试图开发 512量子比特 计算机。特工组已前往销毁超导核心。</p>',
-                'case_silkroad_title': '卷宗 #SILK-ROAD', 'case_silkroad_desc': '新型暗网黑市取缔', 'case_silkroad_content': '<p>发现基于星链传输的去中心化交易市场。已冻结其混币池资产。</p>',
-                'case_satellite_title': '卷宗 #STARDUST', 'case_satellite_desc': '侦察卫星信号劫持', 'case_satellite_content': '<p>叛逃特工截获 KH-11 卫星控制权。正在尝试物理切断接收站。</p>',
-                'case_zeroday_title': '卷宗 #ZERO-DAY', 'case_zeroday_desc': '顶级漏洞黑市掮客', 'case_zeroday_content': '<p>代号 Ghost 兜售 iOS 19 漏洞。悬赏金已提高至 200 万美金。</p>',
-                'case_botnet_title': '卷宗 #BOTNET', 'case_botnet_desc': '千万级僵尸网络', 'case_botnet_content': '<p>20Tbps 攻击导致五角大楼断网。主控节点伪装在智能冰箱内。</p>',
-                'case_neural_title': '卷宗 #NEURAL', 'case_neural_desc': '非法脑机接口植入', 'case_neural_content': '<p>黑客植入神经元芯片，具备用心智解析加密流量的能力。</p>',
-                'case_ransom_title': '卷宗 #RANSOM', 'case_ransom_desc': '医疗系统勒索软件', 'case_ransom_content': '<p>100家医院病历被加密。网络战小组已向其投递木马。</p>'
-            },
-            'en': {
-                'header_main_zh': 'CENTRAL INTELLIGENCE NETWORK', 'header_sub_zh': 'PRISM CORE TERMINAL V5.1',
-                'login_id_ph': 'AGENT_ID', 'login_pass_ph': 'PASSWORD', 'login_btn': 'ESTABLISH SECURE UPLINK',
-                'top_network': 'PROTOCOL: <span style="color: var(--fbi-green);">PRISM-X ACTIVE</span> | AGENT: CHENG', 'top_warning': 'TOP SECRET - LEVEL 6 CLEARANCE GRANTED',
-                'menu_map': '> GLOBAL TRAFFIC MATRIX', 'menu_miner': '> CRYPTO HIJACK SYSTEM', 'menu_crack': '> TARGETED BRUTEFORCE', 'menu_cases': '> CLASSIFIED DOSSIERS', 'menu_console': '> CORE COMMAND TERMINAL',
-                'map_title': 'NODE TRAFFIC TRACKING (LIVE)', 'map_info_title': '[ PHYSICAL NODE SCAN ]', 'map_info_name': 'LOCATION:', 'map_info_ip': 'PUBLIC IP:', 'map_info_ping': 'LATENCY:', 'map_info_status': 'STATUS:',
-                'miner_title': 'BLOCKCHAIN HIJACK PROTOCOL', 'miner_gpu': 'INFECTED CLUSTER (RTX 4090 Array)', 'miner_hash': 'HASHRATE COLLISION:', 'miner_temp': 'CORE TEMP:', 'miner_load': 'RAM USAGE:', 'miner_assets': 'LAUNDERED ASSETS INTERCEPTED',
-                'crack_title': 'TARGETED PAYLOAD INJECTOR', 'crack_target_label': 'TARGET (URL/IP):', 'crack_btn': 'EXECUTE STRIKE', 'crack_wait': 'SYSTEM STANDBY. ENTER TARGET TO BEGIN.',
-                'crack_succ1': '[!!!] TARGET DB DECRYPTION COMPLETE [!!!]', 'crack_succ2': 'EXTRACTED PLAINTEXT KEY:',
-                'cases_title': 'FBI HIGH-LEVEL DOSSIERS (TOTAL: 12)', 'console_greet': '================================================<br>  PRISM Secure OS Kernel v10.4.2<br>  (c) 2026 Central Intelligence. All rights reserved.<br>================================================<br>Type \'help\' for command list.<br><br>',
-                
-                'case_vps_title': 'OP: RackNerd Stealth Tunnel', 'case_vps_desc': 'Establish untraceable overseas physical node.', 'case_vps_content': '<p><strong>TIMELINE:</strong> May 2026</p><p><strong>TARGET:</strong> San Jose Datacenter</p><p><strong>TACTICS:</strong> Utilizing <span class="redacted">VLESS + Reality</span> protocol to bypass the <span class="redacted">Great Firewall</span>.</p>',
-                'case_hk_title': 'OP: HK Border Infiltration', 'case_hk_desc': 'Target planned insertion into HK core zone.', 'case_hk_content': '<p><strong>ROUTE:</strong> Infiltration via <span class="redacted">Chung Ying Street</span>.</p>',
-                'case_epstein_title': 'FILE: L-Island Flight Logs', 'case_epstein_desc': 'Declassified human trafficking network.', 'case_epstein_content': '<p><strong>OVERVIEW:</strong> Unredacted flight manifests of the <span class="redacted">"Lolita Express"</span> extracted.</p>',
-                'case_8964_title': 'ARCHIVE: Operation T-Square \'89', 'case_8964_desc': 'Late Cold War historical intercepts.', 'case_8964_content': '<p><strong>OVERVIEW:</strong> Intercepted military radio traffic from 1989. Under <span class="redacted">Level-0 Censorship</span>.</p>',
-                'case_cyber_title': 'FILE #CYBER-OP', 'case_cyber_desc': 'Grid Blackout Incident', 'case_cyber_content': '<p>Worm variant targeted cooling grids. C2 in Siberia.</p>',
-                'case_quantum_title': 'FILE #PHANTOM', 'case_quantum_desc': 'Quantum Decryption Threat', 'case_quantum_content': '<p>512-qubit rig developed to bruteforce banks.</p>',
-                'case_silkroad_title': 'FILE #SILK-ROAD', 'case_silkroad_desc': 'Dark Web Takedown', 'case_silkroad_content': '<p>Decentralized market via Starlink neutralized.</p>',
-                'case_satellite_title': 'FILE #STARDUST', 'case_satellite_desc': 'Satellite Hijack', 'case_satellite_content': '<p>Rogue agent intercepted KH-11 spy satellite.</p>',
-                'case_zeroday_title': 'FILE #ZERO-DAY', 'case_zeroday_desc': '0-Day Exploit Broker', 'case_zeroday_content': '<p>Hacker selling iOS 19 exploits for $2M.</p>',
-                'case_botnet_title': 'FILE #BOTNET', 'case_botnet_desc': 'IoT Botnet Neutralization', 'case_botnet_content': '<p>Master node disguised as smart fridge crashed Pentagon.</p>',
-                'case_neural_title': 'FILE #NEURAL', 'case_neural_desc': 'Neural Implant Experiment', 'case_neural_content': '<p>Target can decrypt traffic using raw cognition.</p>',
-                'case_ransom_title': 'FILE #RANSOM', 'case_ransom_desc': 'Hospital Ransomware', 'case_ransom_content': '<p>Hackers demand 500 BTC. Cyber Command deployed trojan.</p>'
+        // 进入系统触发器
+        function triggerSystem() {
+            clickCount++;
+            if(clickCount >= 5) {
+                document.getElementById('decoy-screen').style.display = 'none';
+                document.getElementById('fbi-system').style.display = 'flex';
+                startTyping('AUTHORIZED ACCESS ONLY', 'login-title');
+                setTimeout(() => { document.getElementById('login-inputs').style.opacity = '1'; }, 1000);
             }
+        }
+
+        // 打字机
+        function startTyping(text, elementId) {
+            let i = 0; document.getElementById(elementId).innerText = '';
+            let timer = setInterval(() => {
+                document.getElementById(elementId).innerText += text.charAt(i);
+                i++; if(i >= text.length) clearInterval(timer);
+            }, 80);
+        }
+
+        // 登录
+        function login() {
+            const u = document.getElementById('uid').value;
+            const p = document.getElementById('pwd').value;
+            if(u === 'CHENG' && p === '0416') {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-dashboard').style.display = 'grid';
+                document.getElementById('main-dashboard').style.opacity = '1';
+                renderCases();
+            } else {
+                document.getElementById('login-msg').innerText = 'INVALID CREDENTIALS';
+            }
+        }
+
+        // 档案数据 (海量刺激版)
+        const cases = {
+            'zh': [
+                { id:1, t: '卷宗 #890604: T-广场行动', d: '冷战末期东方阵营重大历史信号截获。', body: '根据拦截到的解密无线电信号，<span class="redacted">陆军第27、38军</span>于6月3日22:00收到清场指令。档案包含14张被截获的未曝光胶片，记录了长安街沿线自复兴门至木樨地的<span class="redacted">装甲部队推行路线</span>。情报来源指出，当时的C2指令中心频繁使用了加密代号"雏菊"，且所有关于平民伤亡的数字均在报送前被<span class="redacted">人工抹除</span>。这是自建政以来规模最大的内部信号封锁行动。' },
+                { id:2, t: '卷宗 #EPSTEIN-LOG: 洛丽塔快线', d: '私人岛屿人口贩卖与权贵勒索网络。', body: 'FBI金融侦查组在搜查圣托马斯岛机库时，发现了一份隐藏在燃油舱盖下的飞行日志。日志详细记录了从1998年至2018年间，超过200名全球顶级权贵（包括前总统、王室成员及科技巨头）往返于<span class="redacted">小圣詹姆斯岛</span>的记录。卷宗揭示了一个复杂的勒索陷阱：岛上所有房间均安装了针孔摄像头，目的是获取权贵的<span class="redacted">不雅证据</span>以控制其政治决策。目前已知有3名核心证人在受审前死于监牢。' },
+                { id:3, t: '卷宗 #RACKNERD-X: 跨境隧道', d: '特工Cheng的海外节点部署计划。', body: '目标计划在2026年5月通过租赁<span class="redacted">RackNerd硅谷机房</span>建立加密跳板。采用Reality+VLESS协议栈，将流量伪装成正常的Apple服务。该隧道将作为未来所有跨境情报传输的主骨干。' }
+            ],
+            'en': [
+                { id:1, t: 'FILE #890604: OP T-SQUARE', d: 'Intercepts from the late Cold War Eastern Bloc.', body: 'Decrypted radio traffic shows <span class="redacted">Army Groups 27 & 38</span> received "Clearance" orders at 22:00, June 3rd. Includes 14 unreleased photos showing <span class="redacted">armored movements</span> along Changan Ave. Intelligence suggests the use of codename "Daisy" for critical tactical commands. Casualty counts were <span class="redacted">manually purged</span> before transmission.' },
+                { id:2, t: 'FILE #EPSTEIN-LOG: LOLITA EXPRESS', d: 'VIP blackmail and trafficking network.', body: 'Financial investigators found logs hidden in a fuel tank at St. Thomas. Records reveal 200+ global elites visited <span class="redacted">Little St. James</span> between 1998-2018. The dossier confirms rooms were bugged with pinhole cameras to acquire <span class="redacted">kompromat</span> for political leverage. 3 key witnesses died mysteriously in custody.' }
+            ]
         };
 
-        let currentLang = 'zh';
-        let typingTimeout;
-        let typeIndex = 0;
-
-        function startTyping() {
-            const text = dict[currentLang]['header_main_zh'];
-            if (typeIndex < text.length) {
-                document.getElementById("typing-title").innerHTML += text.charAt(typeIndex);
-                typeIndex++;
-                typingTimeout = setTimeout(startTyping, 80);
-            } else {
-                document.getElementById('input-area').style.opacity = '1';
-                document.getElementById('typing-title').classList.remove('typing-cursor');
-            }
-        }
-
         function renderCases() {
-            const grid = document.querySelector('.case-grid');
-            grid.innerHTML = '';
-            casesData.forEach(c => {
-                const title = dict[currentLang][c.id + '_title'];
-                const desc = dict[currentLang][c.id + '_desc'];
-                const card = document.createElement('div');
-                card.className = 'case-card';
-                card.onclick = () => openDossier(c.id);
-                card.innerHTML = `
-                    <div><span class="case-status ${c.status}">${c.tag}</span>
-                    <h3 style="color: var(--fbi-orange); margin-bottom: 10px;">${title}</h3>
-                    <p style="font-size: 14px; color: #aaa;">${desc}</p></div>
-                    <div style="margin-top: 15px; font-size: 12px; color: var(--fbi-dark-green);">> CLICK TO DECRYPT FILE</div>`;
-                grid.appendChild(card);
+            const list = document.getElementById('case-list'); list.innerHTML = '';
+            cases[lang].forEach(c => {
+                const div = document.createElement('div'); div.className = 'case-card';
+                div.innerHTML = `<h3>${c.t}</h3><p style="font-size:12px;color:#888;margin-top:10px;">${c.d}</p>`;
+                div.onclick = () => openModal(c.t, c.body);
+                list.appendChild(div);
             });
         }
 
-        function toggleLang() {
-            currentLang = currentLang === 'zh' ? 'en' : 'zh';
-            clearTimeout(typingTimeout);
-            typeIndex = 0;
-            document.getElementById("typing-title").innerHTML = "";
-            document.getElementById('typing-title').classList.add('typing-cursor');
-            document.getElementById('input-area').style.opacity = '0';
-            startTyping();
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if(dict[currentLang][key]) el.innerHTML = dict[currentLang][key];
-            });
-            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-                const key = el.getAttribute('data-i18n-ph');
-                if(dict[currentLang][key]) el.placeholder = dict[currentLang][key];
-            });
-            renderCases();
+        function openModal(t, b) {
+            document.getElementById('modal-overlay').style.display = 'block';
+            document.getElementById('m-title').innerText = t;
+            document.getElementById('m-body').innerHTML = b;
         }
-
-        function authenticate() {
-            const id = document.getElementById('agent-id').value;
-            const pass = document.getElementById('agent-pass').value;
-            const msg = document.getElementById('auth-msg');
-            msg.style.color = "var(--fbi-green)";
-            msg.innerText = currentLang === 'zh' ? "正在验证生物识别与安全握手..." : "VERIFYING BIOMETRICS & HANDSHAKE...";
-            setTimeout(() => {
-                if (id === 'CHENG' && pass === '0416') {
-                    document.getElementById('login-screen').style.opacity = 0;
-                    renderCases();
-                    setTimeout(() => {
-                        document.getElementById('login-screen').style.display = 'none';
-                        const dash = document.getElementById('main-dashboard');
-                        dash.style.display = 'grid';
-                        setTimeout(() => dash.style.opacity = 1, 50);
-                    }, 1000);
-                } else {
-                    msg.style.color = "var(--fbi-red)";
-                    msg.innerText = currentLang === 'zh' ? "授权失败。锁定协议已启动。" : "AUTHORIZATION FAILED. LOCKDOWN INITIATED.";
-                }
-            }, 1000);
+        function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+        function showView(id, btn) {
+            document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            document.getElementById(id).classList.add('active'); btn.classList.add('active');
         }
-
-        function switchView(viewId, btn) {
-            document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            btn.classList.add('active');
-        }
-
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-US', {hour12: false}) + ' JST'; }, 1000);
-
-        function showNodeInfo(name, ip, ping, status) {
-            const box = document.getElementById('node-info');
-            box.style.display = 'block';
-            document.getElementById('n-name').innerText = name;
-            document.getElementById('n-ip').innerText = ip;
-            document.getElementById('n-ping').innerText = ping;
-            document.getElementById('n-status').innerText = status;
-        }
-        function hideNodeInfo() { document.getElementById('node-info').style.display = 'none'; }
-
-        let btcAmt = 0.00014200; let prog = 0;
-        setInterval(() => {
-            document.getElementById('hash-rate').innerText = (140 + Math.random() * 10).toFixed(1);
-            document.getElementById('gpu-temp').innerText = Math.floor(65 + Math.random() * 5);
-            prog += Math.random() * 5;
-            if(prog > 100) { prog = 0; btcAmt += 0.00000050; document.getElementById('btc-amt').innerText = btcAmt.toFixed(8); }
-            document.getElementById('mine-prog1').style.width = prog + '%';
-        }, 800);
-
-        let crackInterval;
-        function startCracker() {
-            const out = document.getElementById('crack-output');
-            const succ = document.getElementById('crack-success-msg');
-            const targetUrl = document.getElementById('crack-target-input').value || 'UNKNOWN_TARGET';
-            succ.style.display = 'none'; 
-            out.innerHTML = currentLang === 'zh' ? `>> 正在向目标 [ ${targetUrl} ] 注入恶意载荷...<br>` : `>> INJECTING MALICIOUS PAYLOAD TO [ ${targetUrl} ]...<br>`;
-            let attempts = 0; const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
-            clearInterval(crackInterval);
-            crackInterval = setInterval(() => {
-                let fakePass = ""; for(let i=0; i<32; i++) fakePass += chars.charAt(Math.floor(Math.random() * chars.length));
-                out.innerHTML += `[INJECT] HASH: ${fakePass} -> ACCESS DENIED<br>`;
-                out.scrollTop = out.scrollHeight; attempts++;
-                if(attempts > 40) {
-                    clearInterval(crackInterval);
-                    out.innerHTML += currentLang === 'zh' ? `<br>> [警告] 侦测到后门。目标 [ ${targetUrl} ] 防火墙已瘫痪。<br>` : `<br>> [WARN] BACKDOOR DETECTED. [ ${targetUrl} ] FIREWALL DISABLED.<br>`;
-                    succ.style.display = 'block';
-                }
+        function toggleLang() { lang = (lang === 'zh' ? 'en' : 'zh'); renderCases(); }
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-US', {hour12:false}) + ' JST'; }, 1000);
+        
+        // 破解模拟
+        function startCrack() {
+            const target = document.getElementById('target-url').value || 'SYSTEM_CORE';
+            const log = document.getElementById('crack-log'); log.innerHTML = `>> INITIALIZING EXPLOIT AGAINST: ${target}<br>`;
+            let step = 0;
+            let timer = setInterval(() => {
+                log.innerHTML += `[${Math.random().toString(16).substring(2,8).toUpperCase()}] INJECTING BUFFER_OVERFLOW... FAILED<br>`;
+                log.scrollTop = log.scrollHeight; step++;
+                if(step > 30) { clearInterval(timer); log.innerHTML += `<br>!!! ACCESS GRANTED TO: ${target} !!!`; }
             }, 50);
-        }
-
-        function openDossier(id) {
-            document.getElementById('dossier-modal-overlay').style.display = 'block';
-            document.getElementById('modal-title').innerHTML = dict[currentLang][id + '_title'];
-            document.getElementById('modal-content').innerHTML = dict[currentLang][id + '_content'];
-        }
-        function closeDossier() { document.getElementById('dossier-modal-overlay').style.display = 'none'; }
-
-        function handleCmd(e) {
-            if (e.key === 'Enter') {
-                const input = document.getElementById('cmd');
-                const val = input.value.trim().toLowerCase();
-                const out = document.getElementById('terminal-output');
-                out.innerHTML += `<br><span style="color:var(--fbi-red)">root@prism-cheng:~#</span> ${val}<br>`;
-                if (val === 'help') out.innerHTML += "Commands: clear, status, ping, self_destruct";
-                else if (val === 'clear') out.innerHTML = "";
-                else if (val === 'status') out.innerHTML += "CPU: 18% | RAM: 4GB/16GB | STATUS: PRISM NODE CONNECTED";
-                else if (val === 'ping') out.innerHTML += "Pinging racknerd_node [192.168.1.1]...<br>Reply from 192.168.1.1: bytes=32 time=145ms TTL=48";
-                else if (val === 'self_destruct') out.innerHTML += "<span style='color:red; font-weight:bold;'>WARNING: PHYSICAL DESTRUCTION INITIATED. ABORT. ABORT.</span>";
-                else if (val !== '') out.innerHTML += `bash: ${val}: command not found`;
-                input.value = ''; out.scrollTop = out.scrollHeight;
-            }
         }
     </script>
 </body>
