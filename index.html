@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>FBI - SECURE TERMINAL V2.5</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
+    <style>
+        body { background-color: #000; color: #00ff00; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
+        .hidden { display: none !important; }
+        
+        /* 头部样式 */
+        .fbi-header { position: absolute; top: 20px; left: 40px; display: flex; align-items: center; z-index: 10; }
+        .fbi-logo { width: 50px; height: 50px; margin-right: 15px; }
+
+        /* 登录屏幕 */
+        #login-screen { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .login-box { border: 1px solid #00ff00; padding: 35px; background: rgba(0,20,0,0.9); box-shadow: 0 0 20px #004400; width: 320px; text-align: center; }
+        input.login-input { background: #000; border: 1px solid #008800; color: #00ff00; padding: 10px; margin: 10px 0; width: 85%; text-align: center; outline: none; }
+        button.login-btn { background: #004400; color: #00ff00; border: 1px solid #00ff00; padding: 12px; cursor: pointer; width: 92%; font-weight: bold; margin-top: 15px; }
+        button.login-btn:hover { background: #00ff00; color: #000; }
+
+        /* 主界面 */
+        #main-screen { height: 100vh; display: flex; flex-direction: column; align-items: center; padding-top: 100px; }
+        .console-container { width: 850px; background: rgba(0,20,0,0.9); border: 1px solid #00ff00; padding: 20px; margin-bottom: 20px; }
+        .input-line { font-size: 18px; display: flex; }
+        .input-line input { background: transparent; border: none; color: #fff; outline: none; width: 60%; font-family: inherit; font-size: 18px; margin-left: 10px; }
+        #log-area { height: 100px; overflow-y: hidden; font-size: 14px; color: #00cc00; margin-top: 10px; border-top: 1px dashed #004400; padding-top: 10px; }
+        
+        #map-container { width: 850px; height: 420px; border: 1px solid #004400; background: rgba(0,5,0,0.5); }
+    </style>
+</head>
+<body>
+
+    <div class="fbi-header">
+        < img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Seal_of_the_Federal_Bureau_of_Investigation.svg" class="fbi-logo">
+        <div>
+            <div style="font-size: 18px; font-weight: bold;">FEDERAL BUREAU OF INVESTIGATION</div>
+            <div style="font-size: 10px; letter-spacing: 3px;">CENTRAL INTELLIGENCE NETWORK</div>
+        </div>
+    </div>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <div style="color: #ff3333; margin-bottom: 20px; font-weight: bold;">[ AUTHORIZED ACCESS ONLY ]</div>
+            <input type="text" id="user" class="login-input" placeholder="AGENT_ID">
+            <input type="password" id="pass" class="login-input" placeholder="PASSWORD">
+            <button class="login-btn" onclick="authenticate()">AUTHENTICATE</button>
+            <p id="err-msg" style="color: #ff3333; font-size: 12px; margin-top: 15px;"></p >
+        </div>
+    </div>
+
+    <div id="main-screen" class="hidden">
+        <div class="console-container">
+            <div class="input-line">
+                <span>[AGENT_CHENG@DB]:~# ping -t </span>
+                <input type="text" id="target" placeholder="输入IP或域名..." onkeydown="if(event.keyCode==13) startTracing()">
+            </div>
+            <div id="log-area">等待指令... 输入目标后按下 ENTER 键启动追踪。</div>
+        </div>
+        <div id="map-container"></div>
+    </div>
+
+<script>
+    const AGENT_ID = "CHENG_0416";
+    const ACCESS_KEY = "335";
+    let myChart;
+
+    function authenticate() {
+        const u = document.getElementById('user').value;
+        const p = document.getElementById('pass').value;
+        if (u === AGENT_ID && p === ACCESS_KEY) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-screen').classList.remove('hidden');
+            initChart();
+        } else {
+            document.getElementById('err-msg').innerText = "ERROR: INVALID CREDENTIALS.";
+        }
+    }
+
+    function initChart() {
+        myChart = echarts.init(document.getElementById('map-container'));
+        renderMap();
+    }
+
+    function startTracing() {
+        const target = document.getElementById('target').value;
+        const log = document.getElementById('log-area');
+        if (!target) return;
+
+        log.innerHTML = `> 初始化保密协议...<br>> 正在路由至: ${target}`;
+        let count = 0;
+        const timer = setInterval(() => {
+            const ms = Math.floor(Math.random() * 15) + 148;
+            log.innerHTML += `<br>> 收到来自 ${target} 的加密包: 字节=32 时间=${ms}ms TTL=48`;
+            log.scrollTop = log.scrollHeight;
+            renderMap(target);
+            if (++count > 50) clearInterval(timer);
+        }, 800);
+    }
+
+    function renderMap(name) {
+        const provinces = [
+            {name: '广东', coord: [113, 23]}, {name: '北京', coord: [116, 40]},
+            {name: '上海', coord: [121, 31]}, {name: '重庆', coord: [106, 29]},
+            {name: '浙江', coord: [120, 29]}, {name: '湖北', coord: [114, 30]}
+        ];
+        const p = provinces[Math.floor(Math.random() * provinces.length)];
+
+        myChart.setOption({
+            backgroundColor: 'transparent',
+            geo: { map: 'china', roam: false, itemStyle: { areaColor: '#001a00', borderColor: '#00ff00' } },
+            series: [{
+                type: 'lines',
+                effect: { show: true, period: 3, trailLength: 0.5, color: '#fff', symbolSize: 2 },
+                lineStyle: { color: '#00ff00', width: 1, opacity: 0.4, curveness: 0.3 },
+                data: [{ fromName: 'SJ', toName: p.name, coords: [[125, 25], p.coord] }]
+            }]
+        });
+    }
+</script>
+</body>
+</html>
