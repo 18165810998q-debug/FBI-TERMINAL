@@ -8,7 +8,7 @@
         :root {
             --fbi-green: #00ff00;
             --fbi-dark-green: #004400;
-            --fbi-bg: #000000;
+            --fbi-bg: #030303;
             --fbi-red: #ff3333;
             --fbi-orange: #ff8800;
         }
@@ -23,7 +23,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            user-select: none; /* 防止特工手抖复制界面内容 */
+            user-select: none;
         }
 
         /* 屏幕扫描线特效（沉浸感核心） */
@@ -40,89 +40,96 @@
             cursor: pointer; border: 1px solid var(--fbi-dark-green); padding: 5px 10px;
             background: rgba(0,20,0,0.8); font-weight: bold; transition: 0.3s;
         }
-        #lang-toggle:hover { background: var(--fbi-green); color: #000; border-color: var(--fbi-green); }
+        #lang-toggle:hover { background: var(--fbi-green); color: #000; border-color: var(--fbi-green); box-shadow: 0 0 10px var(--fbi-green); }
 
-        /* --- 登录屏幕（全屏居中） --- */
+        /* ================= 登录屏幕 V3.0 ================= */
         #login-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 100; transition: opacity 1s ease;
         }
 
-        /* 重新设计的登录区域（去掉对话框） */
         .login-box {
-            /* 去掉边框、阴影、半透明背景 */
-            border: none;
-            box-shadow: none;
-            background: none;
-            
-            /* 布局和最大宽度 */
             display: flex; flex-direction: column; align-items: center;
-            width: 100%; max-width: 600px;
-            margin-top: -100px; /* 稍微向上移动，更平衡 */
+            width: 100%; max-width: 700px; margin-top: -80px;
         }
 
-        /* --- 头部内容布局（图标 + 标题） --- */
-        .header-content {
-            display: flex; flex-direction: column; align-items: center;
-            margin-bottom: 50px; /* 与输入框拉开距离 */
-        }
-
-        /* 霸气的图标（加大至200像素） */
-        .fbi-logo-img {
-            width: 200px;
-            margin-bottom: 25px;
-            box-shadow: 0 0 50px var(--fbi-dark-green); /* 图标增加光晕 */
-        }
-
-        /* 霸气的标题文本（中英文都加大、加粗） */
-        .fbi-titles { text-align: center; }
-
-        .main-title {
-            font-size: 36px; /* 超大字体 */
-            font-weight: bold;
-            letter-spacing: 6px;
-            margin-bottom: 15px;
-            text-shadow: 0 0 10px var(--fbi-green); /* 文字增加霓虹灯特效 */
-        }
-
-        .sub-title {
-            font-size: 18px;
-            color: var(--fbi-dark-green);
-        }
-
-        /* --- 输入和按钮区域 --- */
-        .input-group {
-            width: 100%; max-width: 400px;
-            display: flex; flex-direction: column; align-items: center;
-        }
+        .header-content { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
         
+        .fbi-logo-img {
+            width: 180px; margin-bottom: 25px;
+            filter: drop-shadow(0 0 20px var(--fbi-dark-green));
+        }
+
+        .fbi-titles { text-align: center; min-height: 80px; }
+        .main-title { font-size: 38px; font-weight: bold; letter-spacing: 6px; margin-bottom: 15px; text-shadow: 0 0 15px var(--fbi-green); }
+        .sub-title { font-size: 18px; color: var(--fbi-dark-green); letter-spacing: 2px; }
+
+        .input-group { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; opacity: 0; transition: opacity 1s ease; }
         .login-input {
             width: 100%; padding: 15px; margin-bottom: 20px;
-            background: #000; border: 1px solid var(--fbi-dark-green);
-            color: var(--fbi-green); font-family: inherit; font-size: 18px; text-align: center;
-            outline: none;
+            background: rgba(0, 20, 0, 0.3); border: 1px solid var(--fbi-dark-green);
+            color: var(--fbi-green); font-family: inherit; font-size: 18px; text-align: center; outline: none; letter-spacing: 1px;
         }
-        .login-input:focus { border-color: var(--fbi-green); box-shadow: 0 0 15px var(--fbi-green); }
-        
+        .login-input:focus { border-color: var(--fbi-green); box-shadow: 0 0 15px rgba(0, 255, 0, 0.2); background: rgba(0, 40, 0, 0.5); }
         .login-btn {
-            width: 100%; padding: 18px; background: var(--fbi-dark-green);
-            color: var(--fbi-green); border: 1px solid var(--fbi-green);
-            font-family: inherit; font-size: 20px; font-weight: bold; cursor: pointer; letter-spacing: 2px;
-            margin-top: 10px;
+            width: 100%; padding: 18px; background: var(--fbi-dark-green); color: var(--fbi-green); border: 1px solid var(--fbi-green);
+            font-family: inherit; font-size: 20px; font-weight: bold; cursor: pointer; letter-spacing: 4px; margin-top: 10px; transition: 0.3s;
         }
         .login-btn:hover { background: var(--fbi-green); color: #000; box-shadow: 0 0 20px var(--fbi-green); }
 
-        /* 打字机效果和淡入动画 */
-        #typing-title { min-height: 50px; }
-        .input-group { opacity: 0; transition: opacity 1s ease 2s; } /* 打字结束后淡入 */
-
-        /* --- 主控制台（保持原样） --- */
+        /* ================= 主控制台 ================= */
         #main-dashboard {
-            display: none; height: 100vh; grid-template-rows: 60px 1fr; grid-template-columns: 250px 1fr;
+            display: none; height: 100vh; grid-template-rows: 60px 1fr; grid-template-columns: 260px 1fr;
             opacity: 0; transition: opacity 1s ease;
         }
-        /* ...主控制台其他代码保持原样... */
+
+        .top-bar {
+            grid-column: 1 / 3; border-bottom: 2px solid var(--fbi-dark-green); display: flex; justify-content: space-between; align-items: center;
+            padding: 0 30px; background: rgba(0, 15, 0, 0.95); font-size: 16px; font-weight: bold;
+        }
+        .warning-text { color: var(--fbi-red); animation: blink 1.5s infinite; text-shadow: 0 0 5px var(--fbi-red); }
+        @keyframes blink { 0% {opacity: 1;} 50% {opacity: 0;} 100% {opacity: 1;} }
+
+        .sidebar { border-right: 2px solid var(--fbi-dark-green); padding: 20px 0; background: rgba(0, 10, 0, 0.85); }
+        .menu-item { padding: 18px 30px; cursor: pointer; font-size: 16px; border-left: 4px solid transparent; transition: all 0.3s; letter-spacing: 1px; }
+        .menu-item:hover, .menu-item.active { background: rgba(0, 255, 0, 0.1); border-left: 4px solid var(--fbi-green); text-shadow: 0 0 8px var(--fbi-green); }
+
+        .content-area { position: relative; padding: 30px; overflow: hidden; background: radial-gradient(circle at center, #001a00 0%, #000000 100%); }
+        .view-panel { display: none; height: 100%; width: 100%; animation: scanline 0.5s linear; }
+        .view-panel.active { display: block; }
+        @keyframes scanline { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        /* 视图 1：地图 */
+        .map-container { width: 100%; height: 90%; position: relative; border: 1px solid var(--fbi-dark-green); background-color: #000500; overflow: hidden; }
+        .node { position: absolute; width: 14px; height: 14px; background: var(--fbi-green); border-radius: 50%; box-shadow: 0 0 15px var(--fbi-green); cursor: pointer; z-index: 5; }
+        .node::after { content: ''; position: absolute; top: -6px; left: -6px; right: -6px; bottom: -6px; border: 1px solid var(--fbi-green); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% {transform: scale(1); opacity: 1;} 100% {transform: scale(3.5); opacity: 0;} }
+        
+        .flight-path { position: absolute; top: 50%; left: 50%; height: 2px; background: linear-gradient(90deg, transparent, var(--fbi-green)); transform-origin: 0 0; animation: shoot 2.5s infinite; opacity: 0.7; }
+        @keyframes shoot { 0% { width: 0; opacity: 1; } 100% { width: 500px; opacity: 0; } }
+
+        #node-info { position: absolute; bottom: 30px; left: 30px; background: rgba(0,0,0,0.95); border: 1px solid var(--fbi-green); padding: 25px; display: none; z-index: 10; box-shadow: 0 0 20px rgba(0,255,0,0.2); }
+
+        /* 视图 2：挖矿 */
+        .miner-box { border: 1px solid var(--fbi-dark-green); padding: 25px; margin-bottom: 25px; background: rgba(0,10,0,0.6); box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
+        .progress-bar { height: 25px; background: #000; border: 1px solid var(--fbi-dark-green); margin: 15px 0; overflow: hidden; position: relative; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--fbi-dark-green), var(--fbi-green)); width: 0%; box-shadow: 0 0 15px var(--fbi-green); }
+
+        /* 视图 3：破解 */
+        .cracker-screen { background: #000; border: 1px solid var(--fbi-red); padding: 20px; height: 350px; overflow-y: auto; color: var(--fbi-red); font-size: 15px; line-height: 1.5; box-shadow: inset 0 0 20px rgba(255,0,0,0.1); }
+        .crack-success { color: var(--fbi-green); font-size: 22px; text-shadow: 0 0 10px var(--fbi-green); display: none; margin-top: 25px; border: 2px dashed var(--fbi-green); padding: 20px; text-align: center; background: rgba(0,20,0,0.8); }
+
+        /* 视图 4：档案 */
+        .case-card { border: 1px solid var(--fbi-dark-green); padding: 25px; margin-bottom: 25px; background: rgba(0,15,0,0.7); transition: 0.3s; line-height: 1.6; }
+        .case-card:hover { border-color: var(--fbi-green); background: rgba(0,30,0,0.9); box-shadow: -5px 0 0 var(--fbi-green); }
+        .redacted { background: #111; color: #111; display: inline-block; padding: 0 8px; border-radius: 2px; }
+        .redacted:hover { color: var(--fbi-green); background: transparent; text-shadow: 0 0 5px var(--fbi-green); }
+
+        /* 视图 5：终端 */
+        #terminal-output { height: calc(100% - 70px); overflow-y: auto; padding-bottom: 20px; line-height: 1.6; }
+        .input-line { display: flex; align-items: center; margin-top: 15px; border-top: 1px dashed var(--fbi-dark-green); padding-top: 15px; }
+        .cmd-input { background: transparent; border: none; color: var(--fbi-green); font-family: inherit; font-size: 18px; width: 100%; outline: none; margin-left: 15px; }
     </style>
 </head>
 <body onload="startTyping()">
@@ -135,86 +142,308 @@
                 <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Seal_of_the_Federal_Bureau_of_Investigation.svg" class="fbi-logo-img" alt="FBI Seal">
                 <div class="fbi-titles">
                     <div class="main-title" id="typing-title"></div>
-                    <div class="sub-title" data-i18n="header_sub_zh">中央情报终端 V2.5</div>
+                    <div class="sub-title" data-i18n="header_sub_zh">中央情报网络核心终端 V3.0</div>
                 </div>
             </div>
 
-            <div class="input-group">
-                <input type="text" id="agent-id" class="login-input" data-i18n-ph="login_id_ph" placeholder="特工编号 (AGENT_ID)" autocomplete="off">
-                <input type="password" id="agent-pass" class="login-input" data-i18n-ph="login_pass_ph" placeholder="访问密钥 (PASSWORD)" autocomplete="off">
-                <button class="login-btn" onclick="authenticate()" data-i18n="login_btn">验证身份</button>
+            <div class="input-group" id="input-area">
+                <input type="text" id="agent-id" class="login-input" data-i18n-ph="login_id_ph" placeholder="特工授权代码 (AGENT_ID)" autocomplete="off">
+                <input type="password" id="agent-pass" class="login-input" data-i18n-ph="login_pass_ph" placeholder="访问安全密钥 (PASSWORD)" autocomplete="off">
+                <button class="login-btn" onclick="authenticate()" data-i18n="login_btn">建立加密连接</button>
             </div>
-            <p id="auth-msg" style="margin-top: 20px; font-size: 14px; min-height: 20px;"></p>
+            <p id="auth-msg" style="margin-top: 25px; font-size: 16px; min-height: 20px; letter-spacing: 1px;"></p>
         </div>
     </div>
 
     <div id="main-dashboard">
+        <div class="top-bar">
+            <div data-i18n="top_network">安全协议: <span style="color: var(--fbi-green);">AES-256 启用</span> | 登录特工: CHENG_0416</div>
+            <div class="warning-text" data-i18n="top_warning">最高机密 - 未经授权的访问将被追踪</div>
+            <div id="clock">00:00:00</div>
         </div>
 
+        <div class="sidebar">
+            <div class="menu-item active" onclick="switchView('view-map', this)" data-i18n="menu_map">> 全球流量监控矩阵</div>
+            <div class="menu-item" onclick="switchView('view-miner', this)" data-i18n="menu_miner">> 加密算力劫持系统</div>
+            <div class="menu-item" onclick="switchView('view-cracker', this)" data-i18n="menu_crack">> 暴力神经元破解器</div>
+            <div class="menu-item" onclick="switchView('view-cases', this)" data-i18n="menu_cases">> 绝密行动档案库</div>
+            <div class="menu-item" onclick="switchView('view-console', this)" data-i18n="menu_console">> 核心命令行终端</div>
+        </div>
+
+        <div class="content-area">
+            
+            <div id="view-map" class="view-panel active">
+                <h2 style="margin-bottom: 25px; border-bottom: 1px solid var(--fbi-dark-green); padding-bottom: 15px;" data-i18n="map_title">全球数据链路追踪 (实时)</h2>
+                <div class="map-container">
+                    <div class="flight-path" style="transform: rotate(15deg); width: 400px; animation-duration: 2s;"></div>
+                    <div class="flight-path" style="transform: rotate(135deg); width: 350px; animation-duration: 3s; animation-delay: 0.5s;"></div>
+                    <div class="flight-path" style="transform: rotate(250deg); width: 450px; animation-duration: 2.5s; animation-delay: 1s;"></div>
+
+                    <div class="node" style="top: 50%; left: 50%; box-shadow: 0 0 30px var(--fbi-red); background: var(--fbi-red);" onclick="showNodeInfo('中央控制枢纽 (GZ HQ)', '104.18.37.188', '2ms', '安全 (SECURE)')"></div>
+                    <div class="node" style="top: 35%; left: 85%;" onclick="showNodeInfo('RackNerd - 圣何塞节点', '192.168.1.1', '145ms', '就绪 (STANDBY)')"></div>
+                    <div class="node" style="top: 25%; left: 20%;" onclick="showNodeInfo('欧洲暗网中继站', '45.33.22.11', '89ms', '活跃 (ACTIVE)')"></div>
+                    <div class="node" style="top: 65%; left: 60%;" onclick="showNodeInfo('香港跨境网关', '203.0.113.5', '12ms', '监听中 (LISTENING)')"></div>
+                    
+                    <div id="node-info">
+                        <p style="color: var(--fbi-orange); margin-bottom: 15px; font-weight: bold; font-size: 18px;" data-i18n="map_info_title">[ 节点物理信息扫描 ]</p>
+                        <p><strong data-i18n="map_info_name">物理位置:</strong> <span id="n-name"></span></p>
+                        <p><strong data-i18n="map_info_ip">公网 IP:</strong> <span id="n-ip"></span></p>
+                        <p><strong data-i18n="map_info_ping">往返延迟:</strong> <span id="n-ping"></span></p>
+                        <p><strong data-i18n="map_info_status">当前状态:</strong> <span id="n-status"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-miner" class="view-panel">
+                <h2 style="margin-bottom: 25px;" data-i18n="miner_title">区块链算力劫持协议</h2>
+                <div class="miner-box">
+                    <h3 data-i18n="miner_gpu" style="color: var(--fbi-orange); margin-bottom: 15px;">已感染设备集群 (RTX 4090 Array)</h3>
+                    <p style="font-size: 28px; font-weight: bold; margin: 15px 0;"><span data-i18n="miner_hash">实时哈希碰撞率:</span> <span id="hash-rate" style="color: #fff;">145.2</span> TH/s</p>
+                    <p><span data-i18n="miner_temp">平均核心温度:</span> <span id="gpu-temp" style="color: var(--fbi-red);">62</span>°C | <span data-i18n="miner_load">物理内存占用:</span> 98.4%</p>
+                    <div class="progress-bar"><div class="progress-fill" id="mine-prog1"></div></div>
+                </div>
+                <div class="miner-box" style="border-color: var(--fbi-orange); background: rgba(50,20,0,0.3);">
+                    <h3 data-i18n="miner_assets" style="color: var(--fbi-orange);">洗钱网络拦截总额</h3>
+                    <p style="font-size: 50px; color: var(--fbi-orange); font-weight: bold; margin-top: 10px;">₿ <span id="btc-amt">0.00014200</span></p>
+                </div>
+            </div>
+
+            <div id="view-cracker" class="view-panel">
+                <h2 style="margin-bottom: 25px;" data-i18n="crack_title">离线密码字典注入器</h2>
+                <button class="login-btn" style="width: 300px; margin-bottom: 25px;" onclick="startCracker()" data-i18n="crack_btn">执行暴力注入</button>
+                <div class="cracker-screen" id="crack-output" data-i18n="crack_wait">系统待命。请点击执行按钮。</div>
+                <div class="crack-success" id="crack-success-msg">
+                    <span data-i18n="crack_succ1">[!!!] 核心数据库解密完成 [!!!]</span><br><br>
+                    <span data-i18n="crack_succ2">获取到的明文密钥:</span> <strong style="color: #fff; letter-spacing: 2px;">GZ_CHENG_0416_GOD_MODE</strong>
+                </div>
+            </div>
+
+            <div id="view-cases" class="view-panel">
+                <h2 style="margin-bottom: 25px;" data-i18n="cases_title">FBI 高级别监控卷宗</h2>
+                <div class="case-card">
+                    <h3 style="color: var(--fbi-orange); margin-bottom: 10px;">卷宗代号: #2026-MAY-VPS-NODE</h3>
+                    <p><strong data-i18n="cases_obj">监视目标:</strong> <span data-i18n="cases_obj1">建立无法追踪的 RackNerd 海外专线。</span></p>
+                    <p><strong data-i18n="cases_time">风险节点:</strong> <span data-i18n="cases_time1">中考后 (2026年5月)</span></p>
+                    <p style="margin-top: 10px;"><strong data-i18n="cases_detail">战术细节:</strong> <span data-i18n="cases_detail1">目标企图利用最新的 <span class="redacted">VLESS + Reality</span> 协议，将真实流量伪装成正常的 <span class="redacted">HTTPS 请求</span> 从而穿透 <span class="redacted">国家防火墙</span>。目前正处于资金筹备阶段。</span></p>
+                </div>
+                <div class="case-card">
+                    <h3 style="color: var(--fbi-orange); margin-bottom: 10px;">卷宗代号: #2026-SHZ-HK-BORDER</h3>
+                    <p><strong data-i18n="cases_obj">监视目标:</strong> <span data-i18n="cases_obj2">代号 'Cheng' 及 1 名随行同伙</span></p>
+                    <p style="margin-top: 10px;"><strong data-i18n="cases_detail">战术细节:</strong> <span data-i18n="cases_detail2">目标计划通过 <span class="redacted">深圳中英街</span> 进行跨境渗透。总活动资金被严格限制在 <span class="redacted">2000 港币</span> 以内。各单位需在过关时密切注意其携带的电子设备。</span></p>
+                </div>
+            </div>
+
+            <div id="view-console" class="view-panel">
+                <div id="terminal-output">
+                    <span data-i18n="console_greet">================================================<br>  联邦调查局 安全操作系统内核 v10.4.2<br>  版权所有 (c) 2026 核心情报局。保留所有权利。<br>================================================<br>输入 'help' 获取系统指令列表。<br><br></span>
+                </div>
+                <div class="input-line">
+                    <span style="color: var(--fbi-red); font-weight: bold; margin-right: 15px;">root@agent-cheng:~#</span>
+                    <input type="text" id="cmd" class="cmd-input" autocomplete="off" onkeydown="handleCmd(event)">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <script>
-        // ----------------- 国际化 (i18n) 字典 V3.0 -----------------
+        // ----------------- 国际化字典 V3.0 -----------------
         const dict = {
             'zh': {
                 'header_main_zh': '美 国 联 邦 调 查 局',
-                'header_sub_zh': '中央情报终端 V2.5',
-                'login_id_ph': '特工编号 (AGENT_ID)',
-                'login_pass_ph': '访问密钥 (PASSWORD)',
-                'login_btn': '验证身份',
-                // ...主控制台字典保持原样...
+                'header_sub_zh': '中央情报网络核心终端 V3.0',
+                'login_id_ph': '特工授权代码 (AGENT_ID)',
+                'login_pass_ph': '访问安全密钥 (PASSWORD)',
+                'login_btn': '建立加密连接',
+                'top_network': '安全协议: <span style="color: var(--fbi-green);">AES-256 启用</span> | 登录特工: CHENG_0416',
+                'top_warning': '最高机密 - 未经授权的访问将被追踪',
+                'menu_map': '> 全球流量监控矩阵',
+                'menu_miner': '> 加密算力劫持系统',
+                'menu_crack': '> 暴力神经元破解器',
+                'menu_cases': '> 绝密行动档案库',
+                'menu_console': '> 核心命令行终端',
+                'map_title': '全球数据链路追踪 (实时)',
+                'map_info_title': '[ 节点物理信息扫描 ]',
+                'map_info_name': '物理位置:', 'map_info_ip': '公网 IP:', 'map_info_ping': '往返延迟:', 'map_info_status': '当前状态:',
+                'miner_title': '区块链算力劫持协议',
+                'miner_gpu': '已感染设备集群 (RTX 4090 Array)',
+                'miner_hash': '实时哈希碰撞率:', 'miner_temp': '平均核心温度:', 'miner_load': '物理内存占用:',
+                'miner_assets': '洗钱网络拦截总额',
+                'crack_title': '离线密码字典注入器',
+                'crack_btn': '执行暴力注入',
+                'crack_wait': '系统待命。请点击执行按钮。',
+                'crack_succ1': '[!!!] 核心数据库解密完成 [!!!]', 'crack_succ2': '获取到的明文密钥:',
+                'cases_title': 'FBI 高级别监控卷宗',
+                'cases_obj': '监视目标:', 'cases_time': '风险节点:', 'cases_detail': '战术细节:',
+                'cases_obj1': '建立无法追踪的 RackNerd 海外专线。', 'cases_time1': '中考后 (2026年5月)',
+                'cases_detail1': '目标企图利用最新的 <span class="redacted">VLESS + Reality</span> 协议，将真实流量伪装成正常的 <span class="redacted">HTTPS 请求</span> 从而穿透 <span class="redacted">国家防火墙</span>。目前正处于资金筹备阶段。',
+                'cases_obj2': '代号 \'Cheng\' 及 1 名随行同伙', 'cases_detail2': '目标计划通过 <span class="redacted">深圳中英街</span> 进行跨境渗透。总活动资金被严格限制在 <span class="redacted">2000 港币</span> 以内。各单位需在过关时密切注意其携带的电子设备。',
+                'console_greet': '================================================<br>  联邦调查局 安全操作系统内核 v10.4.2<br>  版权所有 (c) 2026 核心情报局。保留所有权利。<br>================================================<br>输入 \'help\' 获取系统指令列表。<br><br>'
             },
             'en': {
                 'header_main_zh': 'FEDERAL BUREAU OF INVESTIGATION',
-                'header_sub_zh': 'CENTRAL INTELLIGENCE NETWORK V2.5',
+                'header_sub_zh': 'CENTRAL INTELLIGENCE NETWORK V3.0',
                 'login_id_ph': 'AGENT_ID',
                 'login_pass_ph': 'PASSWORD',
-                'login_btn': 'AUTHENTICATE',
-                // ...主控制台字典保持原样...
+                'login_btn': 'ESTABLISH SECURE UPLINK',
+                'top_network': 'PROTOCOL: <span style="color: var(--fbi-green);">AES-256 ACTIVE</span> | AGENT: CHENG',
+                'top_warning': 'TOP SECRET - UNAUTHORIZED ACCESS TRACED',
+                'menu_map': '> GLOBAL TRAFFIC MATRIX',
+                'menu_miner': '> CRYPTO HIJACK SYSTEM',
+                'menu_crack': '> NEURAL BRUTEFORCE',
+                'menu_cases': '> CLASSIFIED DOSSIERS',
+                'menu_console': '> CORE COMMAND TERMINAL',
+                'map_title': 'NODE TRAFFIC TRACKING (LIVE)',
+                'map_info_title': '[ PHYSICAL NODE SCAN ]',
+                'map_info_name': 'LOCATION:', 'map_info_ip': 'PUBLIC IP:', 'map_info_ping': 'LATENCY:', 'map_info_status': 'STATUS:',
+                'miner_title': 'BLOCKCHAIN HIJACK PROTOCOL',
+                'miner_gpu': 'INFECTED CLUSTER (RTX 4090 Array)',
+                'miner_hash': 'HASHRATE COLLISION:', 'miner_temp': 'CORE TEMP:', 'miner_load': 'RAM USAGE:',
+                'miner_assets': 'TOTAL LAUNDERED ASSETS INTERCEPTED',
+                'crack_title': 'OFFLINE DICTIONARY INJECTOR',
+                'crack_btn': 'EXECUTE BRUTEFORCE',
+                'crack_wait': 'SYSTEM STANDBY. CLICK TO EXECUTE.',
+                'crack_succ1': '[!!!] CORE DB DECRYPTION COMPLETE [!!!]', 'crack_succ2': 'EXTRACTED PLAINTEXT KEY:',
+                'cases_title': 'FBI HIGH-LEVEL DOSSIERS',
+                'cases_obj': 'TARGET:', 'cases_time': 'RISK WINDOW:', 'cases_detail': 'TACTICAL INTEL:',
+                'cases_obj1': 'Establish untraceable RackNerd tunnel.', 'cases_time1': 'Post-Exams (May 2026)',
+                'cases_detail1': 'Target utilizing <span class="redacted">VLESS + Reality</span> to mask traffic as <span class="redacted">HTTPS requests</span> to bypass the <span class="redacted">Great Firewall</span>. Status: Funding stage.',
+                'cases_obj2': 'Codename \'Cheng\' + 1 Accomplice', 'cases_detail2': 'Infiltration planned via <span class="redacted">Chung Ying Street</span>. Operations budget restricted to <span class="redacted">2000 HKD</span>. Agents to monitor electronic devices at border crossing.',
+                'console_greet': '================================================<br>  FBI Secure OS Kernel v10.4.2<br>  (c) 2026 Central Intelligence. All rights reserved.<br>================================================<br>Type \'help\' for command list.<br><br>'
             }
         };
 
         let currentLang = 'zh';
+        let typingTimeout;
+        let typeIndex = 0;
 
-        // 打字机效果
-        let i = 0;
         function startTyping() {
             const text = dict[currentLang]['header_main_zh'];
-            if (i < text.length) {
-                document.getElementById("typing-title").innerHTML += text.charAt(i);
-                i++;
-                setTimeout(startTyping, 100); // 打字速度
+            if (typeIndex < text.length) {
+                document.getElementById("typing-title").innerHTML += text.charAt(typeIndex);
+                typeIndex++;
+                typingTimeout = setTimeout(startTyping, 80); // 打字速度调整
             } else {
-                // 打字结束，淡入输入框
-                document.querySelector('.input-group').style.opacity = '1';
+                document.getElementById('input-area').style.opacity = '1';
             }
         }
 
         function toggleLang() {
             currentLang = currentLang === 'zh' ? 'en' : 'zh';
             
-            // 重置打字机效果
-            i = 0;
+            // 重置打字机动画
+            clearTimeout(typingTimeout);
+            typeIndex = 0;
             document.getElementById("typing-title").innerHTML = "";
-            document.querySelector('.input-group').style.opacity = '0';
+            document.getElementById('input-area').style.opacity = '0';
             startTyping();
 
-            // 切换带有 data-i18n 的普通文本
+            // 批量替换多语言文本
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(dict[currentLang][key]) el.innerHTML = dict[currentLang][key];
             });
 
-            // 切换带有 data-i18n-ph 的输入框 placeholder
+            // 批量替换输入框的占位符
             document.querySelectorAll('[data-i18n-ph]').forEach(el => {
                 const key = el.getAttribute('data-i18n-ph');
                 if(dict[currentLang][key]) el.placeholder = dict[currentLang][key];
             });
         }
 
-        // --- 核心功能逻辑（代码保持原样） ---
+        // ----------------- 核心交互逻辑 -----------------
         function authenticate() {
-            // ...此处省略原 authenticate 代码，你在旧文件中保留它们即可...
+            const id = document.getElementById('agent-id').value;
+            const pass = document.getElementById('agent-pass').value;
+            const msg = document.getElementById('auth-msg');
+
+            msg.style.color = "var(--fbi-green)";
+            msg.innerText = currentLang === 'zh' ? "正在验证生物识别与安全握手..." : "VERIFYING BIOMETRICS & HANDSHAKE...";
+
+            setTimeout(() => {
+                if (id === 'CHENG' && pass === '0416') {
+                    document.getElementById('login-screen').style.opacity = 0;
+                    setTimeout(() => {
+                        document.getElementById('login-screen').style.display = 'none';
+                        const dash = document.getElementById('main-dashboard');
+                        dash.style.display = 'grid';
+                        setTimeout(() => dash.style.opacity = 1, 50);
+                    }, 1000);
+                } else {
+                    msg.style.color = "var(--fbi-red)";
+                    msg.innerText = currentLang === 'zh' ? "授权失败。锁定协议已启动。" : "AUTHORIZATION FAILED. LOCKDOWN INITIATED.";
+                }
+            }, 1000);
         }
-        // ...其他代码保持原样...
+
+        function switchView(viewId, btn) {
+            document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('en-US', {hour12: false}) + ' JST';
+        }, 1000);
+
+        function showNodeInfo(name, ip, ping, status) {
+            const box = document.getElementById('node-info');
+            box.style.display = 'block';
+            document.getElementById('n-name').innerText = name;
+            document.getElementById('n-ip').innerText = ip;
+            document.getElementById('n-ping').innerText = ping;
+            document.getElementById('n-status').innerText = status;
+        }
+
+        let btcAmt = 0.00014200; let prog = 0;
+        setInterval(() => {
+            document.getElementById('hash-rate').innerText = (140 + Math.random() * 10).toFixed(1);
+            document.getElementById('gpu-temp').innerText = Math.floor(65 + Math.random() * 5);
+            prog += Math.random() * 5;
+            if(prog > 100) { prog = 0; btcAmt += 0.00000050; document.getElementById('btc-amt').innerText = btcAmt.toFixed(8); }
+            document.getElementById('mine-prog1').style.width = prog + '%';
+        }, 800);
+
+        let crackInterval;
+        function startCracker() {
+            const out = document.getElementById('crack-output');
+            const succ = document.getElementById('crack-success-msg');
+            succ.style.display = 'none'; 
+            out.innerHTML = currentLang === 'zh' ? ">> 正在向目标注入恶意载荷...<br>" : ">> INJECTING MALICIOUS PAYLOAD...<br>";
+            
+            let attempts = 0; const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+            clearInterval(crackInterval);
+            crackInterval = setInterval(() => {
+                let fakePass = ""; for(let i=0; i<32; i++) fakePass += chars.charAt(Math.floor(Math.random() * chars.length));
+                out.innerHTML += `[INJECT] HASH: ${fakePass} -> ACCESS DENIED<br>`;
+                out.scrollTop = out.scrollHeight; attempts++;
+                if(attempts > 40) {
+                    clearInterval(crackInterval);
+                    out.innerHTML += currentLang === 'zh' ? "<br>> [警告] 侦测到后门。防火墙已瘫痪。<br>" : "<br>> [WARN] BACKDOOR DETECTED. FIREWALL DISABLED.<br>";
+                    succ.style.display = 'block';
+                }
+            }, 50); // 极速刷屏效果
+        }
+
+        function handleCmd(e) {
+            if (e.key === 'Enter') {
+                const input = document.getElementById('cmd');
+                const val = input.value.trim().toLowerCase();
+                const out = document.getElementById('terminal-output');
+                out.innerHTML += `<br><span style="color:var(--fbi-red)">root@agent-cheng:~#</span> ${val}<br>`;
+                
+                if (val === 'help') out.innerHTML += "Commands: clear, status, ping, self_destruct";
+                else if (val === 'clear') out.innerHTML = "";
+                else if (val === 'status') out.innerHTML += "CPU: 18% | RAM: 4GB/16GB | STATUS: GZ_HQ CONNECTED";
+                else if (val === 'ping') out.innerHTML += "Pinging racknerd_node [192.168.1.1]...<br>Reply from 192.168.1.1: bytes=32 time=145ms TTL=48";
+                else if (val === 'self_destruct') out.innerHTML += "<span style='color:red; font-weight:bold;'>WARNING: PHYSICAL DESTRUCTION INITIATED. ABORT. ABORT.</span>";
+                else if (val !== '') out.innerHTML += `bash: ${val}: command not found`;
+                
+                input.value = ''; out.scrollTop = out.scrollHeight;
+            }
+        }
     </script>
 </body>
 </html>
