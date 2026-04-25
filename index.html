@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CENTRAL INTELLIGENCE NETWORK - V5.0</title>
+    <title>CENTRAL INTELLIGENCE NETWORK - V5.1</title>
     <style>
         :root {
             --fbi-green: #00ff00; --fbi-dark-green: #004400; --fbi-bg: #020202;
@@ -45,7 +45,6 @@
         @keyframes blink { 0% {opacity: 1;} 50% {opacity: 0;} 100% {opacity: 1;} }
         
         .sidebar { border-right: 2px solid var(--fbi-dark-green); background: rgba(0, 10, 0, 0.85); display: flex; flex-direction: column; }
-        /* 左上角内部 FBI 徽章 */
         .sidebar-header { padding: 25px 0; text-align: center; border-bottom: 1px solid var(--fbi-dark-green); margin-bottom: 10px; }
         .sidebar-header img { width: 80px; filter: drop-shadow(0 0 10px var(--fbi-green)); margin-bottom: 10px; }
         .sidebar-header .sys-name { font-weight: bold; letter-spacing: 2px; font-size: 18px; color: var(--fbi-green); }
@@ -58,11 +57,19 @@
         .view-panel.active { display: block; }
         @keyframes scanline { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
 
-        /* ========= 视图 1：世界地图与 10 条数据流 ========= */
+        /* ========= 视图 1：世界地图与绝对精准数据流 ========= */
         .map-container { 
-            width: 100%; height: 90%; position: relative; border: 1px solid var(--fbi-dark-green); background-color: #000500; overflow: hidden;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 500'%3E%3Cpath fill='%23002200' d='M111,92c-1,1-2,2-2,3l-5,5c-1,1-1,3,0,4l8,8c1,1,3,1,4,0l3-3c0-1,1-1,2-1s1,0,2,1l3,3c1,1,1,3,0,4l-5,5c-1,1-3,1-4,0l-5-5c-1-1-2-1-3-1s-2,0-3,1l-8,8c-1,1-1,3,0,4l5,5c1,1,3,1,4,0l3-3c0-1,1-1,2-1s1,0,2,1l5,5c1,1,1,3,0,4l-8,8c-1,1-3,1-4,0l-3-3c-1-1-2-1-3-1s-2,0-3,1l-5,5c-1,1-1,3,0,4l3,3c1,1,3,1,4,0l3-3c0-1,1-1,2-1s1,0,2,1l8,8c1,1,1,3,0,4l-5,5c-1,1-3,1-4,0l-5-5c-1-1-2-1-3-1s-2,0-3,1l-8,8c-1,1-1,3,0,4l3,3c1,1,3,1,4,0l5-5c0-1,1-1,2-1s1,0,2,1l3,3c1,1,1,3,0,4l-5,5c-1,1-3,1-4,0l-3-3c-1-1-2-1-3-1s-2,0-3,1l-5,5c-1,1-1,3,0,4l8,8c1,1,3,1,4,0l3-3c0-1,1-1,2-1s1,0,2,1l3,3c1,1,1,3,0,4l-5,5c-1,1-3,1-4,0l-5-5c-1-1-2-1-3-1s-2,0-3,1l-8,8c-1,1-1,3,0,4l5,5c1,1,3,1,4,0l3-3c0-1,1-1,2-1s1,0,2,1l5,5c1,1,1,3,0,4l-8,8c-1,1-3,1-4,0l-3-3c-1-1-2-1-3-1s-2,0-3,1l-5,5c-1,1-1,3,0,4l3,3c1,1,3,1,4,0l3-3c0-1,1-1,2-1s1,0,2,1l8,8c1,1,1,3,0,4l-5,5c-1,1-3,1-4,0l-5-5M250,150h500v200h-500zM800,100h100v100h-100zM850,250l30,30l-10,10l-30-30zM300,100h100v50h-100zM400,300l50,50l20,-20l-50,-50zM700,350h80v40h-80zM600,150l20,40l-30,10zM150,250h40v80h-40zM500,50l20,20l-10,10l-20,-20zM900,350l20,40l-20,10zM450,400h80v30h-80zM350,200l30,30l-15,15l-30,-30zM200,350l40,20l-10,20l-40,-20z'/%3E%3C/svg%3E"); background-size: cover; background-position: center;
+            width: 100%; height: 90%; position: relative; border: 1px solid var(--fbi-dark-green); 
+            background-color: #000500; overflow: hidden;
+            /* 融合模式：同时显示雷达网格和你上传的 map.png */
+            background-image: url('map.png'), 
+                              linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+            background-repeat: no-repeat, repeat, repeat;
         }
+
+        /* 锁定 viewBox，使 SVG 线条和 HTML 节点的百分比坐标 100% 吻合 */
         .svg-lines { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
         .data-stream { fill: none; stroke: var(--fbi-cyan); stroke-width: 2; stroke-dasharray: 8 12; animation: flow-data 2s linear infinite; filter: drop-shadow(0 0 5px var(--fbi-cyan)); opacity: 0.8; }
         @keyframes flow-data { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
@@ -75,21 +82,18 @@
         
         #node-info { position: absolute; bottom: 30px; left: 30px; background: rgba(0,0,0,0.95); border: 1px solid var(--fbi-green); padding: 25px; display: none; z-index: 10; box-shadow: 0 0 20px rgba(0,255,0,0.2); pointer-events: none; }
 
-        /* ========= 视图 2：挖矿 ========= */
+        /* ========= 其他视图样式 ========= */
         .miner-box { border: 1px solid var(--fbi-dark-green); padding: 25px; margin-bottom: 25px; background: rgba(0,10,0,0.6); box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
         .progress-bar { height: 25px; background: #000; border: 1px solid var(--fbi-dark-green); margin: 15px 0; overflow: hidden; position: relative; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--fbi-dark-green), var(--fbi-green)); width: 0%; box-shadow: 0 0 15px var(--fbi-green); }
 
-        /* ========= 视图 3：密码破解器 (带自定义 URL) ========= */
         .cracker-screen { background: #000; border: 1px solid var(--fbi-red); padding: 20px; height: 300px; overflow-y: auto; color: var(--fbi-red); font-size: 15px; line-height: 1.5; box-shadow: inset 0 0 20px rgba(255,0,0,0.1); }
         .crack-success { color: var(--fbi-green); font-size: 22px; text-shadow: 0 0 10px var(--fbi-green); display: none; margin-top: 25px; border: 2px dashed var(--fbi-green); padding: 20px; text-align: center; background: rgba(0,20,0,0.8); }
 
-        /* ========= 视图 4：绝密档案库 ========= */
         #view-cases { height: 100%; overflow-y: auto; padding-right: 15px; }
         #view-cases::-webkit-scrollbar { width: 6px; }
         #view-cases::-webkit-scrollbar-thumb { background: var(--fbi-dark-green); border-radius: 3px; }
         
-        /* 瀑布流/网格布局提升高级感 */
         .case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding-bottom: 50px;}
         .case-card { border: 1px solid var(--fbi-dark-green); padding: 20px; background: rgba(0,15,0,0.7); transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; }
         .case-card:hover { border-color: var(--fbi-green); background: rgba(0,30,0,0.9); box-shadow: 0 0 15px rgba(0,255,0,0.2); transform: translateY(-3px); }
@@ -99,7 +103,6 @@
         .redacted { background: #222; color: #222; display: inline-block; padding: 0 5px; border-radius: 2px; transition: 0.3s; }
         .redacted:hover { color: var(--fbi-green); background: transparent; text-shadow: 0 0 5px var(--fbi-green); }
 
-        /* ========= 档案详情弹窗 (Modal) ========= */
         #dossier-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; backdrop-filter: blur(5px); }
         #dossier-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 800px; max-height: 85vh; background: #000; border: 2px solid var(--fbi-green); box-shadow: 0 0 30px rgba(0,255,0,0.2); padding: 40px; overflow-y: auto; color: var(--fbi-green); line-height: 1.8; font-size: 16px; }
         #dossier-modal::-webkit-scrollbar { width: 5px; }
@@ -108,7 +111,6 @@
         .modal-close:hover { background: #fff; box-shadow: 0 0 10px #fff; }
         .modal-header-img { width: 100px; filter: grayscale(100%) opacity(0.5); float: left; margin-right: 20px; margin-bottom: 20px; }
 
-        /* ========= 视图 5：终端 ========= */
         #terminal-output { height: calc(100% - 70px); overflow-y: auto; padding-bottom: 20px; line-height: 1.6; }
         .input-line { display: flex; align-items: center; margin-top: 15px; border-top: 1px dashed var(--fbi-dark-green); padding-top: 15px; }
         .cmd-input { background: transparent; border: none; color: var(--fbi-green); font-family: inherit; font-size: 18px; width: 100%; outline: none; margin-left: 15px; }
@@ -124,7 +126,7 @@
                 <img src="logo.png" class="fbi-logo-img" alt="FBI Seal">
                 <div class="fbi-titles">
                     <div class="main-title typing-cursor" id="typing-title"></div>
-                    <div class="sub-title" data-i18n="header_sub_zh">中央情报网络核心终端 V5.0</div>
+                    <div class="sub-title" data-i18n="header_sub_zh">中央情报网络核心终端 V5.1</div>
                 </div>
             </div>
             <div class="input-group" id="input-area">
@@ -146,7 +148,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <img src="logo.png" alt="Sys Logo">
-                <div class="sys-name">PRISM SYSTEM V5</div>
+                <div class="sys-name">PRISM SYSTEM V5.1</div>
             </div>
             <div class="menu-item active" onclick="switchView('view-map', this)" data-i18n="menu_map">> 全球链路追踪矩阵</div>
             <div class="menu-item" onclick="switchView('view-miner', this)" data-i18n="menu_miner">> 算力劫持协议</div>
@@ -161,21 +163,21 @@
                 <h2 style="margin-bottom: 25px; border-bottom: 1px solid var(--fbi-dark-green); padding-bottom: 15px;" data-i18n="map_title">全球数据链路追踪 (实时)</h2>
                 <div class="map-container" id="map-area">
                     
-                    <svg class="svg-lines">
-                        <path d="M 150 150 Q 400 50 745 245" class="data-stream" style="animation-duration: 2s; animation-delay: 0.1s;" /> <path d="M 250 180 Q 450 100 745 245" class="data-stream" style="animation-duration: 2.2s; animation-delay: 0.4s;" /> <path d="M 300 350 Q 500 400 745 245" class="data-stream" style="animation-duration: 2.5s; animation-delay: 0.8s;" /> <path d="M 480 160 Q 600 120 745 245" class="data-stream" style="animation-duration: 1.8s; animation-delay: 0.2s;" /> <path d="M 550 120 Q 650 80 745 245" class="data-stream" style="animation-duration: 1.5s; animation-delay: 0.9s;" /> <path d="M 550 250 Q 650 250 745 245" class="data-stream" style="animation-duration: 1.7s; animation-delay: 0.5s;" /> <path d="M 520 350 Q 650 380 745 245" class="data-stream" style="animation-duration: 2.1s; animation-delay: 0.3s;" /> <path d="M 700 350 Q 720 300 745 245" class="data-stream" style="animation-duration: 1.2s; animation-delay: 0.7s;" /> <path d="M 850 180 Q 800 200 745 245" class="data-stream" style="animation-duration: 1.4s; animation-delay: 0.6s;" /> <path d="M 900 400 Q 850 350 745 245" class="data-stream" style="animation-duration: 2.3s; animation-delay: 0.2s;" /> </svg>
+                    <svg class="svg-lines" viewBox="0 0 1000 500" preserveAspectRatio="none">
+                        <path d="M 150 150 Q 450 50 750 250" class="data-stream" style="animation-duration: 2s; animation-delay: 0.1s;" /> <path d="M 250 180 Q 500 100 750 250" class="data-stream" style="animation-duration: 2.2s; animation-delay: 0.4s;" /> <path d="M 300 350 Q 525 450 750 250" class="data-stream" style="animation-duration: 2.5s; animation-delay: 0.8s;" /> <path d="M 480 160 Q 615 100 750 250" class="data-stream" style="animation-duration: 1.8s; animation-delay: 0.2s;" /> <path d="M 550 120 Q 650 80 750 250" class="data-stream" style="animation-duration: 1.5s; animation-delay: 0.9s;" /> <path d="M 550 250 Q 650 300 750 250" class="data-stream" style="animation-duration: 1.7s; animation-delay: 0.5s;" /> <path d="M 520 350 Q 635 400 750 250" class="data-stream" style="animation-duration: 2.1s; animation-delay: 0.3s;" /> <path d="M 700 350 Q 725 300 750 250" class="data-stream" style="animation-duration: 1.2s; animation-delay: 0.7s;" /> <path d="M 850 180 Q 800 200 750 250" class="data-stream" style="animation-duration: 1.4s; animation-delay: 0.6s;" /> <path d="M 900 400 Q 825 325 750 250" class="data-stream" style="animation-duration: 2.3s; animation-delay: 0.2s;" /> </svg>
 
-                    <div class="node center-hub" style="top: 50%; left: 75%;" onmouseover="showNodeInfo('中央控制枢纽 (GZ HQ)', '104.18.37.188', '2ms', '安全 (SECURE)')" onmouseout="hideNodeInfo()"></div>
+                    <div class="node center-hub" style="left: 75%; top: 50%;" onmouseover="showNodeInfo('中央控制枢纽 (GZ HQ)', '104.18.37.188', '2ms', '安全 (SECURE)')" onmouseout="hideNodeInfo()"></div>
                     
-                    <div class="node" style="top: 30%; left: 15%;" onmouseover="showNodeInfo('硅谷数据中心 (SV RackNerd)', '192.168.1.1', '145ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="top: 36%; left: 25%;" onmouseover="showNodeInfo('纽约金融街网关', '198.51.100.2', '160ms', '数据截获中 (INTERCEPTING)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="top: 70%; left: 30%;" onmouseover="showNodeInfo('圣保罗暗网节点', '200.15.44.2', '210ms', '待机 (STANDBY)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="top: 32%; left: 48%;" onmouseover="showNodeInfo('法兰克福核心路由', '45.33.22.11', '89ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="top: 24%; left: 55%;" onmouseover="showNodeInfo('莫斯科隐秘基站', '82.12.33.9', '120ms', '监听中 (LISTENING)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="top: 50%; left: 55%;" onmouseover="showNodeInfo('迪拜卫星接收站', '185.22.44.1', '135ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="top: 70%; left: 52%;" onmouseover="showNodeInfo('开普敦海底光缆接驳点', '154.0.11.2', '280ms', '信号微弱 (WEAK)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="top: 70%; left: 70%;" onmouseover="showNodeInfo('新加坡跨境网关', '203.0.113.5', '35ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="top: 36%; left: 85%;" onmouseover="showNodeInfo('东京情报搜集站', '110.5.44.2', '45ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
-                    <div class="node" style="top: 80%; left: 90%;" onmouseover="showNodeInfo('悉尼备用灾备中心', '1.1.1.1', '110ms', '同步中 (SYNCING)')" onmouseout="hideNodeInfo()"></div>
+                    <div class="node" style="left: 15%; top: 30%;" onmouseover="showNodeInfo('硅谷数据中心 (SV RackNerd)', '192.168.1.1', '145ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
+                    <div class="node" style="left: 25%; top: 36%;" onmouseover="showNodeInfo('纽约金融街网关', '198.51.100.2', '160ms', '数据截获中 (INTERCEPTING)')" onmouseout="hideNodeInfo()"></div>
+                    <div class="node" style="left: 30%; top: 70%;" onmouseover="showNodeInfo('圣保罗暗网节点', '200.15.44.2', '210ms', '待机 (STANDBY)')" onmouseout="hideNodeInfo()"></div>
+                    <div class="node" style="left: 48%; top: 32%;" onmouseover="showNodeInfo('法兰克福核心路由', '45.33.22.11', '89ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
+                    <div class="node" style="left: 55%; top: 24%;" onmouseover="showNodeInfo('莫斯科隐秘基站', '82.12.33.9', '120ms', '监听中 (LISTENING)')" onmouseout="hideNodeInfo()"></div>
+                    <div class="node" style="left: 55%; top: 50%;" onmouseover="showNodeInfo('迪拜卫星接收站', '185.22.44.1', '135ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
+                    <div class="node" style="left: 52%; top: 70%;" onmouseover="showNodeInfo('开普敦海底光缆接驳点', '154.0.11.2', '280ms', '信号微弱 (WEAK)')" onmouseout="hideNodeInfo()"></div>
+                    <div class="node" style="left: 70%; top: 70%;" onmouseover="showNodeInfo('新加坡跨境网关', '203.0.113.5', '35ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
+                    <div class="node" style="left: 85%; top: 36%;" onmouseover="showNodeInfo('东京情报搜集站', '110.5.44.2', '45ms', '活跃 (ACTIVE)')" onmouseout="hideNodeInfo()"></div>
+                    <div class="node" style="left: 90%; top: 80%;" onmouseover="showNodeInfo('悉尼备用灾备中心', '1.1.1.1', '110ms', '同步中 (SYNCING)')" onmouseout="hideNodeInfo()"></div>
                     
                     <div id="node-info">
                         <p style="color: var(--fbi-orange); margin-bottom: 15px; font-weight: bold; font-size: 18px;" data-i18n="map_info_title">[ 节点物理信息扫描 ]</p>
@@ -221,9 +223,7 @@
                     <h2 data-i18n="cases_title">FBI 核心绝密档案库 (共 12 份)</h2>
                     <span style="color: var(--fbi-red); font-size: 14px; animation: blink 2s infinite;">> 点击卷宗查看详细报告</span>
                 </div>
-                
-                <div class="case-grid">
-                    </div>
+                <div class="case-grid"></div>
             </div>
 
             <div id="view-console" class="view-panel">
@@ -252,26 +252,19 @@
     </div>
 
     <script>
-        // ----------------- 超大型字典 + 档案库内容 V5.0 -----------------
-        // 这里包含了卡片标题和弹窗详细内容
+        // ----------------- 超大型字典 + 档案库内容 V5.1 -----------------
         const casesData = [
-            { id: 'case_vps', status: 'status-orange', tag: 'PENDING' },
-            { id: 'case_hk', status: 'status-orange', tag: 'ACTIVE' },
-            { id: 'case_epstein', status: 'status-red', tag: 'CLASSIFIED' },
-            { id: 'case_8964', status: 'status-red', tag: 'ARCHIVED' },
-            { id: 'case_cyber', status: 'status-orange', tag: 'RESOLVED' },
-            { id: 'case_quantum', status: 'status-red', tag: 'ACTIVE' },
-            { id: 'case_silkroad', status: 'status-orange', tag: 'CLOSED' },
-            { id: 'case_satellite', status: 'status-red', tag: 'CRITICAL' },
-            { id: 'case_zeroday', status: 'status-orange', tag: 'MONITORING' },
-            { id: 'case_botnet', status: 'status-orange', tag: 'RESOLVED' },
-            { id: 'case_neural', status: 'status-red', tag: 'ACTIVE' },
-            { id: 'case_ransom', status: 'status-orange', tag: 'CLOSED' }
+            { id: 'case_vps', status: 'status-orange', tag: 'PENDING' }, { id: 'case_hk', status: 'status-orange', tag: 'ACTIVE' },
+            { id: 'case_epstein', status: 'status-red', tag: 'CLASSIFIED' }, { id: 'case_8964', status: 'status-red', tag: 'ARCHIVED' },
+            { id: 'case_cyber', status: 'status-orange', tag: 'RESOLVED' }, { id: 'case_quantum', status: 'status-red', tag: 'ACTIVE' },
+            { id: 'case_silkroad', status: 'status-orange', tag: 'CLOSED' }, { id: 'case_satellite', status: 'status-red', tag: 'CRITICAL' },
+            { id: 'case_zeroday', status: 'status-orange', tag: 'MONITORING' }, { id: 'case_botnet', status: 'status-orange', tag: 'RESOLVED' },
+            { id: 'case_neural', status: 'status-red', tag: 'ACTIVE' }, { id: 'case_ransom', status: 'status-orange', tag: 'CLOSED' }
         ];
 
         const dict = {
             'zh': {
-                'header_main_zh': '中 央 情 报 网 络', 'header_sub_zh': 'PRISM 核心终端 V5.0',
+                'header_main_zh': '中 央 情 报 网 络', 'header_sub_zh': 'PRISM 核心终端 V5.1',
                 'login_id_ph': '特工授权代码 (AGENT_ID)', 'login_pass_ph': '访问安全密钥 (PASSWORD)', 'login_btn': '建立加密连接',
                 'top_network': '安全协议: <span style="color: var(--fbi-green);">PRISM-X 启用</span> | 登录特工: CHENG_0416', 'top_warning': '最高机密 - LEVEL 6 权限已解锁',
                 'menu_map': '> 全球链路追踪矩阵', 'menu_miner': '> 算力劫持协议', 'menu_crack': '> 定向密码注入器', 'menu_cases': '> 核心绝密档案库', 'menu_console': '> 系统内核终端',
@@ -281,34 +274,21 @@
                 'crack_succ1': '[!!!] 目标数据库解密完成 [!!!]', 'crack_succ2': '获取到的明文密钥:',
                 'cases_title': 'FBI 核心绝密档案库 (共 12 份)', 'console_greet': '================================================<br>  PRISM 核心操作系统内核 v10.4.2<br>  版权所有 (c) 2026 核心情报局。保留所有权利。<br>================================================<br>输入 \'help\' 获取系统指令列表。<br><br>',
                 
-                /* 档案 1: VPS */
-                'case_vps_title': '行动代号：RackNerd 穿透部署', 
-                'case_vps_desc': '建立无法追踪的海外物理节点。',
-                'case_vps_content': '<p><strong>行动时间：</strong> 2026年5月 (中考结束后)</p><p><strong>目标设施：</strong> 美国圣何塞 RackNerd 数据中心</p><p><strong>战术细节：</strong> 特工 Cheng 计划租赁海外独立服务器，并利用最新的 <span class="redacted">VLESS + Reality</span> 协议掩盖数据特征。通过将流量伪装成访问正常的海外域名（如 Apple 或 Microsoft），以彻底穿透并绕过 <span class="redacted">GFW (长城防火墙)</span> 的深度包检测 (DPI)。</p><p><strong>当前状态：</strong> 等待资金预算批复与考试结束许可。</p>',
-                /* 档案 2: HK */
-                'case_hk_title': '行动代号：深港边境潜行', 
-                'case_hk_desc': '目标计划潜入香港核心区。',
-                'case_hk_content': '<p><strong>特遣编队：</strong> 代号 "Cheng" 及 1 名随行特工</p><p><strong>渗透路线：</strong> 计划通过具有特殊司法地位的 <span class="redacted">深圳中英街</span> 作为跳板，规避常规海关检查，进而深入香港市区。</p><p><strong>后勤保障：</strong> 资金严格限制在 <span class="redacted">2000 港币</span> 以内，由驻守在深圳基地的 "Father" 节点提供外围酒店后勤支援。</p><p><strong>风险评估：</strong> 需密切关注边境监控探头及随身电子设备的信号暴露问题。</p>',
-                /* 档案 3: 萝莉岛 (Epstein) */
-                'case_epstein_title': '机密卷宗：L-Island 飞行日志与权贵网络', 
-                'case_epstein_desc': '解封的私人岛屿人口贩卖资金链网络。',
-                'case_epstein_content': '<p><strong>关联人物：</strong> J. Epstein, G. Maxwell 及多名全球政要、科技界巨头。</p><p><strong>地理坐标：</strong> 美属维尔京群岛 - 小圣詹姆斯岛 (Little St. James)</p><p><strong>调查概况：</strong> 财务侦查局已成功提取 <span class="redacted">"洛丽塔快线" (Lolita Express)</span> 的完整未删减飞行日志。通过对比离岸银行的资金洗白路线，发现了一个专供全球顶级权贵阶层的 <span class="redacted">未成年人非法交易与政治敲诈网络</span>。</p><p><strong>情报级别：</strong> 极高危险。多名关键证人已在联邦监狱内 <span class="redacted">"离奇死亡"</span>。所有查阅此卷宗的物理 IP 已被系统强制记录并上报最高层。</p>',
-                /* 档案 4: 六四 (8964) */
-                'case_8964_title': '历史档案：Operation T-Square \'89', 
-                'case_8964_desc': '冷战末期东方阵营重大历史事件截获信号。',
-                'case_8964_content': '<p><strong>档案时间：</strong> 1989年 春夏之交</p><p><strong>档案来源：</strong> 多国驻华大使馆加密电报及高空侦察卫星影像</p><p><strong>事件概要：</strong> 发生在东方核心首都的 <span class="redacted">天安门广场</span> 的大规模社会运动。该数据包包含当时截获的军队调度无线电频段、被封锁的新闻底片以及各方外交斡旋的绝密备忘录。</p><p><strong>安全警告：</strong> 此档案关键字在当地网络环境中属于 <span class="redacted">最高级别封锁词库 (Level-0 Censored)</span>。严禁在未经加密的公网环境中传输该文件包的哈希值，否则将触发当地网络安全部门的物理切断协议。</p>',
-                /* 其他简略档案填充 */
-                'case_cyber_title': '卷宗 #CYBER-OP', 'case_cyber_desc': '东欧电网瘫痪事件溯源', 'case_cyber_content': '<p>黑客组织使用蠕虫病毒攻击了核电站冷却网。我局已追踪到其 C2 服务器位于西伯利亚。</p>',
-                'case_quantum_title': '卷宗 #PHANTOM', 'case_quantum_desc': '量子计算机暴力破解防范', 'case_quantum_content': '<p>财团试图开发 512量子比特 计算机破解全球银行系统。已派遣特工组前往销毁其超导核心。</p>',
-                'case_silkroad_title': '卷宗 #SILK-ROAD', 'case_silkroad_desc': '新型暗网黑市取缔行动', 'case_silkroad_content': '<p>发现基于星链传输的去中心化交易市场。已冻结其价值 4.5 亿美元的混币池资产。</p>',
-                'case_satellite_title': '卷宗 #STARDUST', 'case_satellite_desc': '侦察卫星信号劫持', 'case_satellite_content': '<p>叛逃特工截获了 KH-11 卫星控制权。正在尝试物理切断地面接收站。</p>',
-                'case_zeroday_title': '卷宗 #ZERO-DAY', 'case_zeroday_desc': '全球顶级漏洞黑市掮客', 'case_zeroday_content': '<p>代号 Ghost 正在兜售 iOS 19 内核漏洞。悬赏金已提高至 200 万美金。</p>',
-                'case_botnet_title': '卷宗 #BOTNET', 'case_botnet_desc': '千万级物联网僵尸网络', 'case_botnet_content': '<p>利用智能设备发起的 20Tbps 攻击导致五角大楼断网。主控节点伪装在智能冰箱内。</p>',
-                'case_neural_title': '卷宗 #NEURAL', 'case_neural_desc': '非法脑机接口植入实验', 'case_neural_content': '<p>黑客体内被植入神经元加速芯片，具备直接用心智解析加密流量的能力。</p>',
-                'case_ransom_title': '卷宗 #RANSOM', 'case_ransom_desc': '医疗系统勒索软件', 'case_ransom_content': '<p>100家医院病历被加密，索要 500 BTC。网络战小组已向其投递木马。</p>'
+                'case_vps_title': '行动代号：RackNerd 穿透部署', 'case_vps_desc': '建立无法追踪的海外物理节点。', 'case_vps_content': '<p><strong>行动时间：</strong> 2026年5月 (中考结束后)</p><p><strong>目标设施：</strong> 美国圣何塞 RackNerd 数据中心</p><p><strong>战术细节：</strong> 特工 Cheng 计划租赁海外独立服务器，利用 <span class="redacted">VLESS + Reality</span> 协议彻底穿透并绕过 <span class="redacted">GFW (长城防火墙)</span> 的深度包检测 (DPI)。</p><p><strong>当前状态：</strong> 等待考试结束许可。</p>',
+                'case_hk_title': '行动代号：深港边境潜行', 'case_hk_desc': '目标计划潜入香港核心区。', 'case_hk_content': '<p><strong>特遣编队：</strong> 代号 "Cheng" 及 1 名随行特工</p><p><strong>渗透路线：</strong> 计划通过 <span class="redacted">深圳中英街</span> 作为跳板，规避常规海关检查。</p><p><strong>风险评估：</strong> 需密切关注边境监控探头信号暴露问题。</p>',
+                'case_epstein_title': '机密卷宗：L-Island 飞行日志', 'case_epstein_desc': '解封的权贵资金链网络。', 'case_epstein_content': '<p><strong>关联人物：</strong> J. Epstein 及多名全球政要。</p><p><strong>调查概况：</strong> 已成功提取 <span class="redacted">"洛丽塔快线" (Lolita Express)</span> 的完整飞行日志。发现专供顶级权贵阶层的 <span class="redacted">未成年人非法交易网络</span>。</p><p><strong>情报级别：</strong> 极高危险。查阅此卷宗的物理 IP 已被记录。</p>',
+                'case_8964_title': '历史档案：Operation T-Square \'89', 'case_8964_desc': '冷战末期截获信号。', 'case_8964_content': '<p><strong>档案时间：</strong> 1989年 春夏之交</p><p><strong>事件概要：</strong> 截获的大规模社会运动无线电频段与被封锁新闻底片。</p><p><strong>安全警告：</strong> 此档案属于 <span class="redacted">最高级别封锁词库 (Level-0 Censored)</span>，严禁外传。</p>',
+                'case_cyber_title': '卷宗 #CYBER-OP', 'case_cyber_desc': '东欧电网瘫痪事件溯源', 'case_cyber_content': '<p>黑客组织攻击了核电站冷却网。C2 服务器位于西伯利亚。</p>',
+                'case_quantum_title': '卷宗 #PHANTOM', 'case_quantum_desc': '量子计算机暴力破解防范', 'case_quantum_content': '<p>财团试图开发 512量子比特 计算机。特工组已前往销毁超导核心。</p>',
+                'case_silkroad_title': '卷宗 #SILK-ROAD', 'case_silkroad_desc': '新型暗网黑市取缔', 'case_silkroad_content': '<p>发现基于星链传输的去中心化交易市场。已冻结其混币池资产。</p>',
+                'case_satellite_title': '卷宗 #STARDUST', 'case_satellite_desc': '侦察卫星信号劫持', 'case_satellite_content': '<p>叛逃特工截获 KH-11 卫星控制权。正在尝试物理切断接收站。</p>',
+                'case_zeroday_title': '卷宗 #ZERO-DAY', 'case_zeroday_desc': '顶级漏洞黑市掮客', 'case_zeroday_content': '<p>代号 Ghost 兜售 iOS 19 漏洞。悬赏金已提高至 200 万美金。</p>',
+                'case_botnet_title': '卷宗 #BOTNET', 'case_botnet_desc': '千万级僵尸网络', 'case_botnet_content': '<p>20Tbps 攻击导致五角大楼断网。主控节点伪装在智能冰箱内。</p>',
+                'case_neural_title': '卷宗 #NEURAL', 'case_neural_desc': '非法脑机接口植入', 'case_neural_content': '<p>黑客植入神经元芯片，具备用心智解析加密流量的能力。</p>',
+                'case_ransom_title': '卷宗 #RANSOM', 'case_ransom_desc': '医疗系统勒索软件', 'case_ransom_content': '<p>100家医院病历被加密。网络战小组已向其投递木马。</p>'
             },
             'en': {
-                'header_main_zh': 'CENTRAL INTELLIGENCE NETWORK', 'header_sub_zh': 'PRISM CORE TERMINAL V5.0',
+                'header_main_zh': 'CENTRAL INTELLIGENCE NETWORK', 'header_sub_zh': 'PRISM CORE TERMINAL V5.1',
                 'login_id_ph': 'AGENT_ID', 'login_pass_ph': 'PASSWORD', 'login_btn': 'ESTABLISH SECURE UPLINK',
                 'top_network': 'PROTOCOL: <span style="color: var(--fbi-green);">PRISM-X ACTIVE</span> | AGENT: CHENG', 'top_warning': 'TOP SECRET - LEVEL 6 CLEARANCE GRANTED',
                 'menu_map': '> GLOBAL TRAFFIC MATRIX', 'menu_miner': '> CRYPTO HIJACK SYSTEM', 'menu_crack': '> TARGETED BRUTEFORCE', 'menu_cases': '> CLASSIFIED DOSSIERS', 'menu_console': '> CORE COMMAND TERMINAL',
@@ -318,18 +298,18 @@
                 'crack_succ1': '[!!!] TARGET DB DECRYPTION COMPLETE [!!!]', 'crack_succ2': 'EXTRACTED PLAINTEXT KEY:',
                 'cases_title': 'FBI HIGH-LEVEL DOSSIERS (TOTAL: 12)', 'console_greet': '================================================<br>  PRISM Secure OS Kernel v10.4.2<br>  (c) 2026 Central Intelligence. All rights reserved.<br>================================================<br>Type \'help\' for command list.<br><br>',
                 
-                'case_vps_title': 'OP: RackNerd Stealth Tunnel', 'case_vps_desc': 'Establish untraceable overseas physical node.', 'case_vps_content': '<p><strong>TIMELINE:</strong> May 2026 (Post-Exams)</p><p><strong>TARGET:</strong> RackNerd Datacenter, San Jose</p><p><strong>TACTICS:</strong> Agent Cheng plans to lease an independent server utilizing the <span class="redacted">VLESS + Reality</span> protocol. Traffic will be masked as standard <span class="redacted">Apple/Microsoft</span> requests to completely bypass the <span class="redacted">Great Firewall (GFW)</span> Deep Packet Inspection.</p><p><strong>STATUS:</strong> Awaiting budget approval and exam completion.</p>',
-                'case_hk_title': 'OP: HK Border Infiltration', 'case_hk_desc': 'Target planned insertion into HK core zone.', 'case_hk_content': '<p><strong>UNIT:</strong> Codename "Cheng" + 1 Asset</p><p><strong>ROUTE:</strong> Infiltration planned via <span class="redacted">Chung Ying Street</span> to bypass standard customs protocols.</p><p><strong>LOGISTICS:</strong> Operations budget strictly capped at <span class="redacted">2000 HKD</span>. Base node "Father" providing hotel recon support from Shenzhen.</p><p><strong>RISK:</strong> High monitoring camera density. Electronic device signature exposure likely.</p>',
-                'case_epstein_title': 'FILE: L-Island Flight Logs & Elite Ring', 'case_epstein_desc': 'Declassified human trafficking financial network.', 'case_epstein_content': '<p><strong>SUBJECTS:</strong> J. Epstein, G. Maxwell, multiple global politicians and tech executives.</p><p><strong>COORDS:</strong> US Virgin Islands - Little St. James</p><p><strong>OVERVIEW:</strong> Financial crimes unit extracted unredacted flight manifests of the <span class="redacted">"Lolita Express"</span>. Cross-referencing offshore laundering routes revealed a <span class="redacted">minor exploitation and political blackmail ring</span> serving global elites.</p><p><strong>THREAT LEVEL:</strong> CRITICAL. Key witnesses died under <span class="redacted">"mysterious circumstances"</span> in federal custody. Your IP accessing this file has been logged.</p>',
-                'case_8964_title': 'ARCHIVE: Operation T-Square \'89', 'case_8964_desc': 'Late Cold War historical intercepts.', 'case_8964_content': '<p><strong>TIMELINE:</strong> Spring/Summer 1989</p><p><strong>SOURCE:</strong> Embassy encrypted cables and high-altitude recon imagery.</p><p><strong>OVERVIEW:</strong> Mass social movement at <span class="redacted">Tiananmen Square</span>. Datapack contains intercepted military radio traffic, smuggled film negatives, and classified diplomatic memos.</p><p><strong>WARN:</strong> Keywords in this file are under <span class="redacted">Level-0 Censorship</span> in the local network. Transmitting hashes over unencrypted public nets will trigger immediate physical severance protocols by local cyber-security forces.</p>',
-                'case_cyber_title': 'FILE #CYBER-OP', 'case_cyber_desc': 'Grid Blackout Incident', 'case_cyber_content': '<p>Hackers deployed a worm variant targeting cooling grids. C2 server traced to Siberia.</p>',
-                'case_quantum_title': 'FILE #PHANTOM', 'case_quantum_desc': 'Quantum Decryption Threat', 'case_quantum_content': '<p>Syndicate developing 512-qubit rig to bruteforce banks. Agents deployed to destroy core.</p>',
-                'case_silkroad_title': 'FILE #SILK-ROAD', 'case_silkroad_desc': 'Dark Web Takedown', 'case_silkroad_content': '<p>Decentralized market operating via Starlink. Frozen $450M in mixer pool assets.</p>',
-                'case_satellite_title': 'FILE #STARDUST', 'case_satellite_desc': 'Satellite Hijack', 'case_satellite_content': '<p>Rogue agent intercepted KH-11 spy satellite controls. Attempting ground disconnect.</p>',
-                'case_zeroday_title': 'FILE #ZERO-DAY', 'case_zeroday_desc': '0-Day Exploit Broker', 'case_zeroday_content': '<p>Hacker Ghost selling iOS 19 Kernel exploits. Bounty raised to $2M.</p>',
-                'case_botnet_title': 'FILE #BOTNET', 'case_botnet_desc': 'IoT Botnet Neutralization', 'case_botnet_content': '<p>20Tbps DDoS via smart devices crashed Pentagon. Master node disguised as smart fridge.</p>',
-                'case_neural_title': 'FILE #NEURAL', 'case_neural_desc': 'Neural Implant Experiment', 'case_neural_content': '<p>Underground clinic implanting neural accelerators. Target can decrypt traffic using raw cognition.</p>',
-                'case_ransom_title': 'FILE #RANSOM', 'case_ransom_desc': 'Hospital Ransomware', 'case_ransom_content': '<p>100 hospitals encrypted. Hackers demand 500 BTC. Cyber Command deployed trojan.</p>'
+                'case_vps_title': 'OP: RackNerd Stealth Tunnel', 'case_vps_desc': 'Establish untraceable overseas physical node.', 'case_vps_content': '<p><strong>TIMELINE:</strong> May 2026</p><p><strong>TARGET:</strong> San Jose Datacenter</p><p><strong>TACTICS:</strong> Utilizing <span class="redacted">VLESS + Reality</span> protocol to bypass the <span class="redacted">Great Firewall</span>.</p>',
+                'case_hk_title': 'OP: HK Border Infiltration', 'case_hk_desc': 'Target planned insertion into HK core zone.', 'case_hk_content': '<p><strong>ROUTE:</strong> Infiltration via <span class="redacted">Chung Ying Street</span>.</p>',
+                'case_epstein_title': 'FILE: L-Island Flight Logs', 'case_epstein_desc': 'Declassified human trafficking network.', 'case_epstein_content': '<p><strong>OVERVIEW:</strong> Unredacted flight manifests of the <span class="redacted">"Lolita Express"</span> extracted.</p>',
+                'case_8964_title': 'ARCHIVE: Operation T-Square \'89', 'case_8964_desc': 'Late Cold War historical intercepts.', 'case_8964_content': '<p><strong>OVERVIEW:</strong> Intercepted military radio traffic from 1989. Under <span class="redacted">Level-0 Censorship</span>.</p>',
+                'case_cyber_title': 'FILE #CYBER-OP', 'case_cyber_desc': 'Grid Blackout Incident', 'case_cyber_content': '<p>Worm variant targeted cooling grids. C2 in Siberia.</p>',
+                'case_quantum_title': 'FILE #PHANTOM', 'case_quantum_desc': 'Quantum Decryption Threat', 'case_quantum_content': '<p>512-qubit rig developed to bruteforce banks.</p>',
+                'case_silkroad_title': 'FILE #SILK-ROAD', 'case_silkroad_desc': 'Dark Web Takedown', 'case_silkroad_content': '<p>Decentralized market via Starlink neutralized.</p>',
+                'case_satellite_title': 'FILE #STARDUST', 'case_satellite_desc': 'Satellite Hijack', 'case_satellite_content': '<p>Rogue agent intercepted KH-11 spy satellite.</p>',
+                'case_zeroday_title': 'FILE #ZERO-DAY', 'case_zeroday_desc': '0-Day Exploit Broker', 'case_zeroday_content': '<p>Hacker selling iOS 19 exploits for $2M.</p>',
+                'case_botnet_title': 'FILE #BOTNET', 'case_botnet_desc': 'IoT Botnet Neutralization', 'case_botnet_content': '<p>Master node disguised as smart fridge crashed Pentagon.</p>',
+                'case_neural_title': 'FILE #NEURAL', 'case_neural_desc': 'Neural Implant Experiment', 'case_neural_content': '<p>Target can decrypt traffic using raw cognition.</p>',
+                'case_ransom_title': 'FILE #RANSOM', 'case_ransom_desc': 'Hospital Ransomware', 'case_ransom_content': '<p>Hackers demand 500 BTC. Cyber Command deployed trojan.</p>'
             }
         };
 
@@ -349,7 +329,6 @@
             }
         }
 
-        // 初始化档案卡片
         function renderCases() {
             const grid = document.querySelector('.case-grid');
             grid.innerHTML = '';
@@ -360,13 +339,10 @@
                 card.className = 'case-card';
                 card.onclick = () => openDossier(c.id);
                 card.innerHTML = `
-                    <div>
-                        <span class="case-status ${c.status}">${c.tag}</span>
-                        <h3 style="color: var(--fbi-orange); margin-bottom: 10px;">${title}</h3>
-                        <p style="font-size: 14px; color: #aaa;">${desc}</p>
-                    </div>
-                    <div style="margin-top: 15px; font-size: 12px; color: var(--fbi-dark-green);">> CLICK TO DECRYPT FILE</div>
-                `;
+                    <div><span class="case-status ${c.status}">${c.tag}</span>
+                    <h3 style="color: var(--fbi-orange); margin-bottom: 10px;">${title}</h3>
+                    <p style="font-size: 14px; color: #aaa;">${desc}</p></div>
+                    <div style="margin-top: 15px; font-size: 12px; color: var(--fbi-dark-green);">> CLICK TO DECRYPT FILE</div>`;
                 grid.appendChild(card);
             });
         }
@@ -379,7 +355,6 @@
             document.getElementById('typing-title').classList.add('typing-cursor');
             document.getElementById('input-area').style.opacity = '0';
             startTyping();
-            
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(dict[currentLang][key]) el.innerHTML = dict[currentLang][key];
@@ -388,7 +363,7 @@
                 const key = el.getAttribute('data-i18n-ph');
                 if(dict[currentLang][key]) el.placeholder = dict[currentLang][key];
             });
-            renderCases(); // 重新渲染卡片语言
+            renderCases();
         }
 
         function authenticate() {
@@ -400,7 +375,7 @@
             setTimeout(() => {
                 if (id === 'CHENG' && pass === '0416') {
                     document.getElementById('login-screen').style.opacity = 0;
-                    renderCases(); // 登录成功时渲染一次档案
+                    renderCases();
                     setTimeout(() => {
                         document.getElementById('login-screen').style.display = 'none';
                         const dash = document.getElementById('main-dashboard');
@@ -433,7 +408,6 @@
         }
         function hideNodeInfo() { document.getElementById('node-info').style.display = 'none'; }
 
-        // 挖矿模拟
         let btcAmt = 0.00014200; let prog = 0;
         setInterval(() => {
             document.getElementById('hash-rate').innerText = (140 + Math.random() * 10).toFixed(1);
@@ -443,7 +417,6 @@
             document.getElementById('mine-prog1').style.width = prog + '%';
         }, 800);
 
-        // 自定义目标定向破解器
         let crackInterval;
         function startCracker() {
             const out = document.getElementById('crack-output');
@@ -451,7 +424,6 @@
             const targetUrl = document.getElementById('crack-target-input').value || 'UNKNOWN_TARGET';
             succ.style.display = 'none'; 
             out.innerHTML = currentLang === 'zh' ? `>> 正在向目标 [ ${targetUrl} ] 注入恶意载荷...<br>` : `>> INJECTING MALICIOUS PAYLOAD TO [ ${targetUrl} ]...<br>`;
-            
             let attempts = 0; const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
             clearInterval(crackInterval);
             crackInterval = setInterval(() => {
@@ -466,17 +438,13 @@
             }, 50);
         }
 
-        // 弹窗控制
         function openDossier(id) {
             document.getElementById('dossier-modal-overlay').style.display = 'block';
             document.getElementById('modal-title').innerHTML = dict[currentLang][id + '_title'];
             document.getElementById('modal-content').innerHTML = dict[currentLang][id + '_content'];
         }
-        function closeDossier() {
-            document.getElementById('dossier-modal-overlay').style.display = 'none';
-        }
+        function closeDossier() { document.getElementById('dossier-modal-overlay').style.display = 'none'; }
 
-        // 终端
         function handleCmd(e) {
             if (e.key === 'Enter') {
                 const input = document.getElementById('cmd');
