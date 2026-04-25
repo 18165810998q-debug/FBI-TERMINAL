@@ -23,11 +23,11 @@
         .formula { font-family: 'Times New Roman', serif; color: #e74c3c; font-weight: bold; }
         
         /* 隐藏的激活点 */
-        #secret-trigger {
-            position: fixed; bottom: 10px; right: 10px; width: 40px; height: 40px;
-            cursor: default; opacity: 0.1; z-index: 3000;
-        }
-
+       #secret-trigger {
+    position: fixed; bottom: 0px; right: 0px; width: 100px; height: 100px;
+    background-color: rgba(255, 0, 0, 0.3); /* 加上半透明红色，方便你瞄准 */
+    cursor: pointer; z-index: 3000;
+}
         /* ========= FBI 核心终端样式 (默认隐藏) ========= */
         #fbi-system {
             display: none; background-color: var(--fbi-bg); color: var(--fbi-green);
