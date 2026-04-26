@@ -274,8 +274,7 @@
 
         // 启动瞬间执行 AES-256 加密并销毁明文
         function initCrypto() {
-            encryptedDb = CryptoJS.AES.encrypt(JSON.stringify(rawDatabase), '20110401').toString();
-            rawDatabase.length = 0; 
+            encryptedDb = CryptoJS.AES.encrypt(JSON.stringify(rawDatabase), '20110401').toString(); 
         }
         initCrypto();
 
