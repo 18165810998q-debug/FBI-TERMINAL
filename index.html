@@ -10,7 +10,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Courier New', Courier, monospace; overflow: hidden; height: 100vh; background-color: #f4f4f4; user-select: none; }
 
-        /* ================= 伪装层 (公式矩阵) ================= */
+        /* ================= 伪装层 (中考公式矩阵) ================= */
         #decoy-screen { padding: 40px; height: 100%; overflow-y: auto; background: #fff; z-index: 2000; position: relative; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; }
         .decoy-h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; font-size: 28px; }
         .study-section { margin-bottom: 30px; }
@@ -18,7 +18,7 @@
         .study-card { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; background: #f9f9f9; line-height: 1.6; }
         .formula { font-family: 'Times New Roman', serif; color: #e74c3c; font-weight: bold; font-size: 18px; margin-top: 10px; display: inline-block; cursor: text; }
 
-        /* ================= FBI 核心终端与光影 ================= */
+        /* ================= FBI 核心终端与完美光影 ================= */
         #fbi-system { display: none; background-color: var(--fbi-bg); color: var(--fbi-green); height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: 100; flex-direction: column; }
         #fbi-system::after { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 999; background-size: 100% 2px, 3px 100%; pointer-events: none; }
 
@@ -48,8 +48,7 @@
         .view-panel.active { display: block; }
         @keyframes scanline { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
 
-        /* ========= 核心模块组件 ========= */
-        /* 地图 */
+        /* ========= 核心火力模块 ========= */
         .map-container { width: 100%; height: 90%; position: relative; border: 1px solid var(--fbi-dark-green); background-image: url('map.png'); background-size: 100% 100%; }
         .svg-lines { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
         .data-stream { fill: none; stroke: var(--fbi-cyan); stroke-width: 2; stroke-dasharray: 8 12; animation: flow-data 2s linear infinite; opacity: 0.8; }
@@ -57,13 +56,11 @@
         .node { position: absolute; width: 10px; height: 10px; background: var(--fbi-cyan); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 10px var(--fbi-cyan); cursor: pointer; }
         .node.center-hub { width: 16px; height: 16px; background: var(--fbi-red); box-shadow: 0 0 30px var(--fbi-red); }
 
-        /* 矿机与破解 (全面回归) */
         .miner-box { border: 1px solid var(--fbi-dark-green); padding: 25px; margin-bottom: 25px; background: rgba(0,10,0,0.6); }
         .progress-bar { height: 25px; background: #000; border: 1px solid var(--fbi-dark-green); margin: 15px 0; overflow: hidden; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--fbi-dark-green), var(--fbi-green)); width: 0%; }
         .cracker-screen { background: #000; border: 1px solid var(--fbi-red); padding: 20px; height: 350px; overflow-y: auto; color: var(--fbi-red); font-size: 14px; line-height: 1.5; font-family: 'Courier New', monospace; box-shadow: inset 0 0 20px rgba(255,0,0,0.2); }
 
-        /* 档案 */
         .case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; overflow-y: auto; height: 100%; padding-bottom: 50px; padding-right: 10px; }
         .case-grid::-webkit-scrollbar { width: 6px; } .case-grid::-webkit-scrollbar-thumb { background: var(--fbi-dark-green); }
         .case-card { border: 1px solid var(--fbi-dark-green); padding: 20px; background: rgba(0,15,0,0.7); cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
@@ -71,13 +68,11 @@
         .redacted { background: #111; color: #111; transition: 0.3s; user-select: none; padding: 0 4px; }
         .redacted:hover { background: transparent; color: var(--fbi-red); text-shadow: 0 0 5px var(--fbi-red); }
 
-        /* 黑匣子 */
         .blackbox-container { position: relative; height: calc(100% - 130px); width: 100%; border: 1px solid var(--fbi-dark-green); background: rgba(0,5,0,0.9); padding: 20px; }
         #blackbox-text { width: 100%; height: 100%; background: transparent; border: none; color: var(--fbi-orange); font-size: 16px; outline: none; resize: none; position: relative; z-index: 2; font-family: inherit; line-height: 1.6; }
         .fbi-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40%; opacity: 0.05; pointer-events: none; }
         .bb-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
 
-        /* 弹窗 */
         #modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; backdrop-filter: blur(5px); }
         #modal-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 900px; max-height: 85vh; background: #000; border: 2px solid var(--fbi-green); box-shadow: 0 0 30px rgba(0,255,0,0.2); padding: 40px; overflow-y: auto; color: var(--fbi-green); line-height: 1.8; font-size: 16px; }
         #modal-box::-webkit-scrollbar { width: 5px; } #modal-box::-webkit-scrollbar-thumb { background: var(--fbi-green); }
@@ -225,16 +220,16 @@
 
     <script>
         /* =========================================================
-           V6.2 PRO 引擎层: SHA-256验证 + AES-256解密 + 全部功能恢复
+           V6.2 PRO: SHA-256 Hardcoded + AES Runtime Encryption (For Ease of Update)
            ========================================================= */
 
         let clickCount = 0; let failCount = 0; let sysKey = ''; let encryptedDb = null;
 
-        // 【安全替换】填入你生成的硬编码哈希值 (已转小写防错)
+        // 【安全核心】硬编码的 SHA-256 幽灵指纹 (chenguanlin / 20110401)
         const targetUidHash = 'a8020052e92727cfa6d58fcdcecf125b578fd24299dedea2902c6fe8992bca98';
         const targetPwdHash = '9b6d67cdd4bab5578e6273d7842d6d2004667095686e012c142f2ad824def19c';
 
-        // 15份档案 (含700字以上绝密扩写)
+        // 15份档案：方便你随时在 HTML 中续写更新
         const rawDatabase = [
             { id: 1, tag: 'CRITICAL', title: '卷宗 #890604: T-广场行动 (未删减详尽版)', desc: '冷战末期东方阵营核心军事信号截获与战术推演全面报告。', 
               content: `
@@ -272,13 +267,14 @@
             { id: 15, tag: 'CRITICAL', title: '卷宗 #PROJECT-PEAGASUS', desc: '无接触间谍软件。', content: '<p>Zero-Click 感染，发送 iMessage 即可接管设备。</p>' }
         ];
 
-        // 启动瞬间执行 AES-256 加密并销毁明文
+        // 运行时动态加密脚本：页面打开瞬间锁死明文并将其从内存中清除
         function initCrypto() {
-            encryptedDb = CryptoJS.AES.encrypt(JSON.stringify(rawDatabase), '20110401').toString(); 
+            encryptedDb = CryptoJS.AES.encrypt(JSON.stringify(rawDatabase), '20110401').toString();
+            rawDatabase.length = 0; 
         }
         initCrypto();
 
-        // F=ma 触发登录框
+        // 隐形扳机触发
         function triggerSystem() {
             clickCount++;
             if(clickCount >= 5) {
@@ -293,7 +289,7 @@
             }
         }
 
-        // SHA-256 验证 & 焦土防线
+        // SHA-256 幽灵验证机制与防线
         function attemptLogin() {
             const u = document.getElementById('uid').value.toLowerCase();
             const p = document.getElementById('pwd').value;
@@ -302,7 +298,7 @@
             
             setTimeout(() => {
                 if(CryptoJS.SHA256(u).toString() === targetUidHash && CryptoJS.SHA256(p).toString() === targetPwdHash) {
-                    sysKey = p; // 密码作为 AES 解密钥匙
+                    sysKey = p; // 将输入的 20110401 赋予解密引擎
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('main-dashboard').style.display = 'grid';
                     setTimeout(() => document.getElementById('main-dashboard').style.opacity = '1', 50);
@@ -320,7 +316,7 @@
             }, 800);
         }
 
-        // 渲染档案库
+        // 解密并渲染卷宗列表
         function renderCases() {
             const list = document.getElementById('case-list'); list.innerHTML = '';
             try {
@@ -342,11 +338,11 @@
             document.getElementById(id).classList.add('active'); btn.classList.add('active');
         }
 
-        // 弹窗
+        // 弹窗逻辑
         function openModal(t, c) { document.getElementById('modal-overlay').style.display = 'block'; document.getElementById('m-title').innerText = t; document.getElementById('m-body').innerHTML = c; }
         function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
 
-        // 黑匣子
+        // 黑匣子本地存取系统
         function saveBox() {
             localStorage.setItem('fbi_memo', document.getElementById('blackbox-text').value); 
             document.getElementById('bb-status').innerText = "STATUS: [ SECURED IN CACHE ]";
@@ -361,7 +357,7 @@
             else { box.value = ""; status.innerText = "STATUS: [ VAULT EMPTY ]"; status.style.color = "var(--fbi-red)"; }
         }
 
-        // 矿机模拟逻辑
+        // 比特币矿机动态模拟
         let btcAmt = 0.00014200; let prog = 0;
         setInterval(() => {
             document.getElementById('hash-rate').innerText = (140 + Math.random() * 10).toFixed(1);
@@ -371,7 +367,7 @@
             document.getElementById('mine-prog').style.width = prog + '%';
         }, 800);
 
-        // 破解命令逻辑
+        // 骇客命令行攻击模拟
         function startCrack() {
             const target = document.getElementById('crack-target').value || 'SYSTEM_CORE';
             const log = document.getElementById('crack-log');
